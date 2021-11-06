@@ -1,24 +1,26 @@
 ﻿using UnityEngine;
 using Framework;
 using System.Collections.Generic;
+using System;
 
 namespace Game.System
 {
-    public interface ITimeSystem : ISystem
+    /// <summary>
+    /// 游戏定时器系统
+    /// </summary>
+    public interface ITimerSystem : ISystem
     {
 
         public interface ITimer
         { 
             public bool IsInvalid { get; }
 
-            public void Stop();
+            public void Kill();
 
             public void Pause();
 
             public void Resume();
         }
-
-        public delegate void ActionTimer(in float dt);
 
         public float CurrTime { get; }
 
@@ -28,7 +30,7 @@ namespace Game.System
         /// <param name="interval">延迟时间</param>
         /// <param name="onDelayCallback">回调</param>
         /// <returns>定时器</returns>
-        public ITimer AddDelayTask(float interval, ActionTimer onDelayCallback);
+        public ITimer AddDelayTask(float interval, Action<float> onDelayCallback);
 
         /// <summary>
         /// 定时回调
@@ -36,25 +38,39 @@ namespace Game.System
         /// <param name="interval">间隔</param>
         /// <param name="onDelayCallback">回调</param>
         /// <returns>定时器</returns>
-        public ITimer AddTask(float interval, ActionTimer onDelayCallback);
+        public ITimer AddTask(float interval, Action<float> onDelayCallback);
+
+        public bool IsPause { get; }
+
+        /// <summary>
+        /// 暂停定时器
+        /// </summary>
+        /// <param name="key"></param>
+        public void Pause(string key);
+
+        /// <summary>
+        /// 恢复定时器
+        /// </summary>
+        /// <param name="key"></param>
+        public void Resume(string key);
     }
 
-    public class TimeSystem : AbstractSystem, ITimeSystem
+    public class TimerSystem : AbstractSystem, ITimerSystem
     {
         enum TimerStatus
         {
             Running, Pause, Killed
         }
 
-        class Timer : ITimeSystem.ITimer
+        class Timer : ITimerSystem.ITimer
         {
+            public readonly float interval;
 
             public TimerStatus status = TimerStatus.Running;
-            public ITimeSystem.ActionTimer onTimerCallback;
-            public readonly float interval;
+            public Action<float> onTimerCallback;
             public float checkTime;
 
-            public Timer(float interval, ITimeSystem.ActionTimer onTimerCallback)
+            public Timer(float interval, Action<float> onTimerCallback)
             {
                 this.interval = interval;
                 this.onTimerCallback = onTimerCallback;
@@ -78,7 +94,7 @@ namespace Game.System
                 }
             }
 
-            public void Stop()
+            public void Kill()
             {
                 status = TimerStatus.Killed;
                 onTimerCallback = null;
@@ -88,7 +104,7 @@ namespace Game.System
         protected override void OnInitSystem()
         {
             var gameObject = new GameObject("TimeSystem");
-            Object.DontDestroyOnLoad(gameObject);
+            UnityEngine.Object.DontDestroyOnLoad(gameObject);
 
             gameObject.AddComponent<TimerComponent>()
                 .OnUpdateCallback += OnUpdate;
@@ -124,8 +140,8 @@ namespace Game.System
                 if (timer.status == TimerStatus.Running && timer.checkTime <= currTime)
                 {
                     var delta = timer.interval + (currTime - timer.checkTime);
-                    timer.onTimerCallback?.Invoke(in delta);
-                    timer.Stop();
+                    timer.onTimerCallback?.Invoke(delta);
+                    timer.Kill();
                 }
                 if (timer.status == TimerStatus.Killed)
                 {
@@ -152,7 +168,7 @@ namespace Game.System
                 {
                     var delta = timer.interval + (currTime - timer.checkTime);
                     timer.checkTime = currTime + timer.interval;
-                    timer.onTimerCallback?.Invoke(in delta);
+                    timer.onTimerCallback?.Invoke(delta);
                 }
                 if (timer.status == TimerStatus.Killed)
                 {
@@ -161,7 +177,7 @@ namespace Game.System
             }
         }
 
-        public ITimeSystem.ITimer AddDelayTask(float interval, ITimeSystem.ActionTimer onDelayCallback)
+        public ITimerSystem.ITimer AddDelayTask(float interval, Action<float> onDelayCallback)
         {
             var timer = new Timer(interval, onDelayCallback);
             timer.checkTime = CurrTime + interval;
@@ -169,12 +185,31 @@ namespace Game.System
             return timer;
         }
 
-        public ITimeSystem.ITimer AddTask(float interval, ITimeSystem.ActionTimer onDelayCallback)
+        public ITimerSystem.ITimer AddTask(float interval, Action<float> onDelayCallback)
         {
             var timer = new Timer(interval, onDelayCallback);
             timer.checkTime = CurrTime + interval;
             m_Timers.Add(timer);
             return timer;
+        }
+
+        private HashSet<string> m_PauseKeys = new HashSet<string>();
+        public bool IsPause => m_PauseKeys.Count > 0;
+
+        public void Pause(string key)
+        {
+            if (m_PauseKeys.Add(key))
+            {
+                Debug.Log(string.Format("TimerSystem pause same key \"{0}\"", key));
+            }
+        }
+
+        public void Resume(string key)
+        {
+            if (m_PauseKeys.Remove(key))
+            {
+                Debug.Log(string.Format("TimerSystem resume non-existent key \"{0}\"", key));
+            }
         }
     }
 }
