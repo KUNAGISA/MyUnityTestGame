@@ -7,6 +7,9 @@ namespace Game
         protected override void Init()
         {
             RegisterSystem<System.ITimeSystem>(new System.TimeSystem());
+
+            /// 用Addressables来管理资源
+            RegisterUtility<Utility.IAssetsUtility>(new Utility.AddressablesAssetsUtility());
         }
     }
 }
