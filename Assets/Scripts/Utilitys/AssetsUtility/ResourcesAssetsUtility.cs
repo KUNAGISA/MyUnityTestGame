@@ -1,7 +1,7 @@
-﻿using System;
 using Framework;
 using UnityEngine;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace Game.Utility
 {
@@ -23,18 +23,11 @@ namespace Game.Utility
             return Resources.Load<TObject>(fullPath);
         }
 
-        public void LoadAssetAsync<TObject>(string path, Action<TObject> onLoadFinishCallback) where TObject : UnityEngine.Object
+        public async Task<TObject> LoadAssetAsync<TObject>(string path) where TObject : UnityEngine.Object
         {
             var fullPath = GetResPath(path);
             var request = Resources.LoadAsync<TObject>(fullPath);
-            if (request.isDone)
-            {
-                onLoadFinishCallback(request.asset as TObject);
-            }
-            else
-            {
-                request.completed += (result) => onLoadFinishCallback(request.asset as TObject);
-            }
+            return await new Task<TObject>(() => request.asset as TObject);
         }
 
         public void ReleaseAsset<TObject>(TObject obj) where TObject : UnityEngine.Object

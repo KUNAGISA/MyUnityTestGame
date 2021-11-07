@@ -1,5 +1,5 @@
 ﻿using Framework;
-using System;
+using System.Threading.Tasks;
 
 namespace Game.Utility
 {
@@ -21,8 +21,8 @@ namespace Game.Utility
         /// </summary>
         /// <typeparam name="TObject">资源类型</typeparam>
         /// <param name="path">资源路径</param>
-        /// <param name="onLoadFinishCallback">加载完成后回调</param>
-        void LoadAssetAsync<TObject>(string path, Action<TObject> onLoadFinishCallback) where TObject : UnityEngine.Object;
+        /// <returns>加载任务</returns>
+        Task<TObject> LoadAssetAsync<TObject>(string path) where TObject : UnityEngine.Object;
 
         /// <summary>
         /// 释放资源

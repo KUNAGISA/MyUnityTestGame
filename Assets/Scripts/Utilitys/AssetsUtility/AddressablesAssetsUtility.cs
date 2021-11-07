@@ -1,11 +1,11 @@
-using Framework;
-using System;
+锘縰sing Framework;
+using System.Threading.Tasks;
 using UnityEngine.AddressableAssets;
 
 namespace Game.Utility
 {
     /// <summary>
-    /// Addressables资源管理工具
+    /// Addressables璧勬簮绠＄悊宸ュ叿
     /// </summary>
     public class AddressablesAssetsUtility : AbstractUtility, IAssetsUtility
     {
@@ -19,18 +19,10 @@ namespace Game.Utility
             return task.Result;
         }
 
-        public void LoadAssetAsync<TObject>(string path, Action<TObject> onLoadFinishCallback) where TObject : UnityEngine.Object
+        public async Task<TObject> LoadAssetAsync<TObject>(string path) where TObject : UnityEngine.Object
         {
             var fullPath = GetResPath(path);
-            var task = Addressables.LoadAssetAsync<TObject>(fullPath);
-            if (task.IsDone)
-            {
-                onLoadFinishCallback(task.Result);
-            }
-            else
-            {
-                task.Completed += (Handle) => onLoadFinishCallback(Handle.Result);
-            }
+            return await Addressables.LoadAssetAsync<TObject>(fullPath).Task;
         }
 
         public void ReleaseAsset<TObject>(TObject obj) where TObject : UnityEngine.Object
