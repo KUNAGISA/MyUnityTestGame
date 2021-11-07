@@ -1,14 +1,18 @@
-using Game.Manager;
+﻿using Game.Manager.View;
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Game
 {
     public interface IView
     {
+        public ViewDefine.ViewName ViewName { get; }
+
+        void SetViewName(ViewDefine.ViewName viewName);
+
         void SetManager(IViewManager manager);
+
+        void SetParent(Transform transform);
 
         void Destroy();
     }
@@ -17,6 +21,9 @@ namespace Game
     public abstract class BaseView : AbstractsController, IView
     {
         private WeakReference<IViewManager> m_ViewManager = new WeakReference<IViewManager>(null);
+
+        private ViewDefine.ViewName m_ViewName;
+        ViewDefine.ViewName IView.ViewName => m_ViewName;
 
         void IView.Destroy()
         {
@@ -34,6 +41,16 @@ namespace Game
             {
                 manager.Pop(this);
             }
+        }
+
+        void IView.SetParent(Transform transform)
+        {
+            gameObject.transform.SetParent(transform, true);
+        }
+
+        void IView.SetViewName(ViewDefine.ViewName viewName)
+        {
+            m_ViewName = viewName;
         }
     }
 }
