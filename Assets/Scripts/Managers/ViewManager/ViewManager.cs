@@ -1,16 +1,16 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
+using Framework;
 
 namespace Game.Manager.View
 {
     public interface IViewManager
     {
-        public void Push(ViewDefine.ViewName viewName);
-
         public void Pop(ViewDefine.ViewName viewName);
 
         public void Pop(IView view);
+
+        public void Push(ViewDefine.ViewName viewName);
     }
 
     public class ViewManager : AbstractsController, IViewManager
@@ -18,20 +18,90 @@ namespace Game.Manager.View
         [SerializeField]
         private BaseViewPanel m_ViewPanel;
 
+        [SerializeField]
+        private GameObject m_LoadAsyncMask;
+
+        private readonly Queue<ViewDefine.ViewName> m_PushViewQueue = new Queue<ViewDefine.ViewName>();
+
+        protected override void Awake()
+        {
+            base.Awake();
+
+            this.RegisterEvent((in Event.PushViewEvent e) => Push(e.viewName))
+                .UnRegisterWhenGameObjectDestroy(gameObject);
+            this.RegisterEvent((in Event.PopViewEvent e) => Pop(e.viewName))
+                .UnRegisterWhenGameObjectDestroy(gameObject);
+
+            m_LoadAsyncMask.SetActive(false);
+        }
+
         public void Pop(ViewDefine.ViewName viewName)
         {
-            //Addressables.LoadAssetAsync<GameObject>("aaaaa");
+            m_ViewPanel.Pop(viewName);
         }
 
         public void Pop(IView view)
         {
-            
-            throw new global::System.NotImplementedException();
+            m_ViewPanel.Pop(view);
         }
 
-        public void Push(ViewDefine.ViewName viewName)
+        public async void Push(ViewDefine.ViewName viewName)
         {
-            throw new global::System.NotImplementedException();
+            var viewPath = ViewDefine.GetViewPath(viewName);
+            if (viewPath == null || viewPath.Length <= 0)
+            {
+                return;
+            }
+
+            m_PushViewQueue.Enqueue(viewName);
+            CheckLoadAsyncMask();
+
+            var assetsSystem = this.GetSystem<System.IAssetsSystem>();
+            await assetsSystem.LoadAssetsAsync<GameObject>(viewPath);
+
+            CheckViewQueue();
+        }
+
+        /// <summary>
+        /// 检查界面队列是否能打开
+        /// </summary>
+        private void CheckViewQueue()
+        {
+            var queueCount = m_PushViewQueue.Count;
+            if (queueCount <= 0)
+            {
+                return;
+            }
+
+            var assetsSystem = this.GetSystem<System.IAssetsSystem>();
+            while(--queueCount >= 0)
+            {
+                var viewName = m_PushViewQueue.Peek();
+                var viewPath = ViewDefine.GetViewPath(viewName);
+
+                if (!assetsSystem.IsLoadedAssets(viewPath))
+                {
+                    break;
+                }
+
+                m_PushViewQueue.Dequeue();
+
+                var prefab = assetsSystem.GetAssets<GameObject>(viewPath);
+                var view = Instantiate(prefab).GetComponent<IView>();
+                view.SetManager(this);
+                view.SetViewName(viewName);
+                m_ViewPanel.Push(view);
+            }
+            CheckLoadAsyncMask();
+        }
+
+        /// <summary>
+        /// 检查是否要打开异步加载遮罩
+        /// </summary>
+        private void CheckLoadAsyncMask()
+        {
+            var queueCount = m_PushViewQueue.Count;
+            m_LoadAsyncMask.SetActive(queueCount > 0);
         }
     }
 }

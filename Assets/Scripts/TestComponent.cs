@@ -1,20 +1,14 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using Framework;
-using UnityEngine.UI;
 
 namespace Game
 {
-    public class TestComponent : AbstractsController, ICanGetUtility
+    public class TestComponent : AbstractsController, ICanGetUtility, ICanSendEvent
     {
-        public string path = "";
-
-        private async void Start()
+        protected override void Start()
         {
-            var assets = this.GetSystem<System.IAssetsSystem>();
-            var obj = await assets.GetAssetsAsync<GameObject>(path);
-            Instantiate(obj);
+            base.Start();
+            this.SendEvent(new Event.PushViewEvent(ViewDefine.ViewName.TestView));
         }
     }
 }
