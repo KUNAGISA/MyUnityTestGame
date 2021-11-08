@@ -11,7 +11,9 @@ namespace Game.System
     /// </summary>
     public interface IAssetsSystem : ISystem
     {
-        public void LoadAssetsAsync<TObject>(string path) where TObject : UnityEngine.Object;
+        public bool IsLoadedAssets(string path);
+
+        public Task LoadAssetsAsync<TObject>(string path) where TObject : UnityEngine.Object;
 
         public TObject GetAssets<TObject>(string path) where TObject : UnityEngine.Object;
 
@@ -40,7 +42,7 @@ namespace Game.System
             Resources.UnloadUnusedAssets();
         }
 
-        public async void LoadAssetsAsync<TObject>(string path) where TObject : UnityEngine.Object
+        public async Task LoadAssetsAsync<TObject>(string path) where TObject : UnityEngine.Object
         {
             if (!m_AssetCacheMap.ContainsKey(path))
             {
@@ -71,6 +73,11 @@ namespace Game.System
                 m_AssetCacheMap[path] = obj;
             }
             return obj as TObject;
+        }
+
+        public bool IsLoadedAssets(string path)
+        {
+            return m_AssetCacheMap.ContainsKey(path);
         }
     }
 }
