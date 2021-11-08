@@ -17,17 +17,18 @@ namespace Game.Utility
 
         private string GetResPath(in string path) => suffix.Replace(path, "");
 
-        public TObject LoadAsset<TObject>(string path) where TObject : UnityEngine.Object
+        public TObject LoadAsset<TObject>(string path) where TObject : Object
         {
             var fullPath = GetResPath(path);
             return Resources.Load<TObject>(fullPath);
         }
 
-        public async Task<TObject> LoadAssetAsync<TObject>(string path) where TObject : UnityEngine.Object
+        public async Task<TObject> LoadAssetAsync<TObject>(string path) where TObject : Object
         {
-            var fullPath = GetResPath(path);
-            var request = Resources.LoadAsync<TObject>(fullPath);
-            return await new Task<TObject>(() => request.asset as TObject);
+            var tcs = new TaskCompletionSource<TObject>();
+            var request = Resources.LoadAsync<TObject>(GetResPath(path));
+            request.completed += (operation) => tcs.TrySetResult(request.asset as TObject);
+            return await tcs.Task;
         }
 
         public void ReleaseAsset<TObject>(TObject obj) where TObject : UnityEngine.Object

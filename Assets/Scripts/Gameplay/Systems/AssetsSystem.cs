@@ -22,10 +22,11 @@ namespace Game.System
 
     public class AssetsSystem : AbstractSystem, IAssetsSystem
     {
-        private Dictionary<string, UnityEngine.Object> m_AssetCacheMap = new Dictionary<string, UnityEngine.Object>();
+        private readonly Dictionary<string, UnityEngine.Object> m_AssetCacheMap = new Dictionary<string, UnityEngine.Object>();
 
         protected override void OnInitSystem()
         {
+            Cleanup();
         }
 
         public void Cleanup()
@@ -45,7 +46,7 @@ namespace Game.System
             {
                 var assetsUtility = this.GetUtility<Utility.IAssetsUtility>();
                 var obj = await assetsUtility.LoadAssetAsync<TObject>(path);
-                m_AssetCacheMap.Add(path, obj);
+                m_AssetCacheMap[path] = obj;
             }
         }
 
@@ -55,18 +56,19 @@ namespace Game.System
             {
                 var assetsUtility = this.GetUtility<Utility.IAssetsUtility>();
                 obj = assetsUtility.LoadAsset<TObject>(path);
-                m_AssetCacheMap.Add(path, obj);
+                m_AssetCacheMap[path] = obj;
             }
             return obj as TObject;
         }
 
         public async Task<TObject> GetAssetsAsync<TObject>(string path) where TObject : UnityEngine.Object
-        {
+        {   
             if (!m_AssetCacheMap.TryGetValue(path, out var obj))
             {
+                /// AssetsUtility具体实现都带缓存，所以这里就暂时不做缓存task了
                 var assetsUtility = this.GetUtility<Utility.IAssetsUtility>();
                 obj = await assetsUtility.LoadAssetAsync<TObject>(path);
-                m_AssetCacheMap.Add(path, obj);
+                m_AssetCacheMap[path] = obj;
             }
             return obj as TObject;
         }
