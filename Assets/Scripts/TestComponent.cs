@@ -1,13 +1,11 @@
-﻿using UnityEngine;
-using Framework;
+﻿using Framework;
 
 namespace Game
 {
     public class TestComponent : AbstractsController, ICanGetUtility, ICanSendEvent
     {
-        protected override void Start()
+        protected void Start()
         {
-            base.Start();
             this.SendEvent(new Event.PushViewEvent(ViewDefine.ViewName.TestView));
         }
     }

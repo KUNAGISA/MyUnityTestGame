@@ -23,10 +23,8 @@ namespace Game.Manager.View
 
         private readonly Queue<ViewDefine.ViewName> m_PushViewQueue = new Queue<ViewDefine.ViewName>();
 
-        protected override void Awake()
+        protected void Awake()
         {
-            base.Awake();
-
             this.RegisterEvent((in Event.PushViewEvent e) => Push(e.viewName))
                 .UnRegisterWhenGameObjectDestroy(gameObject);
             this.RegisterEvent((in Event.PopViewEvent e) => Pop(e.viewName))

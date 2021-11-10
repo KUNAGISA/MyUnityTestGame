@@ -1,27 +1,16 @@
-﻿using UnityEngine;
+﻿using System;
 using Framework;
+using UnityEngine;
 using System.Collections.Generic;
-using System;
+using Game.System.Timer;
 
 namespace Game.System
 {
     /// <summary>
-    /// 游戏定时器系统
+    /// 定时器系统
     /// </summary>
     public interface ITimerSystem : ISystem
     {
-
-        public interface ITimer
-        { 
-            public bool IsInvalid { get; }
-
-            public void Kill();
-
-            public void Pause();
-
-            public void Resume();
-        }
-
         public float CurrTime { get; }
 
         /// <summary>
@@ -38,7 +27,7 @@ namespace Game.System
         /// <param name="interval">间隔</param>
         /// <param name="onDelayCallback">回调</param>
         /// <returns>定时器</returns>
-        public ITimer AddTask(float interval, Action<float> onDelayCallback);
+        public ITimer AddTask(Action<float> onDelayCallback, float interval = 0.0f);
 
         public bool IsPause { get; }
 
@@ -62,7 +51,7 @@ namespace Game.System
             Running, Pause, Killed
         }
 
-        class Timer : ITimerSystem.ITimer
+        class Timer : ITimer
         {
             public readonly float interval;
 
@@ -118,7 +107,7 @@ namespace Game.System
 
         private void OnUpdate()
         {
-            m_CurrTime += Time.deltaTime;
+            m_CurrTime += Time.unscaledDeltaTime;
             OnUpdateTask();
             OnUpdateDelayTask();
         }
@@ -177,7 +166,7 @@ namespace Game.System
             }
         }
 
-        public ITimerSystem.ITimer AddDelayTask(float interval, Action<float> onDelayCallback)
+        public ITimer AddDelayTask(float interval, Action<float> onDelayCallback)
         {
             var timer = new Timer(interval, onDelayCallback);
             timer.checkTime = CurrTime + interval;
@@ -185,7 +174,7 @@ namespace Game.System
             return timer;
         }
 
-        public ITimerSystem.ITimer AddTask(float interval, Action<float> onDelayCallback)
+        public ITimer AddTask(Action<float> onDelayCallback, float interval = 0.0f)
         {
             var timer = new Timer(interval, onDelayCallback);
             timer.checkTime = CurrTime + interval;

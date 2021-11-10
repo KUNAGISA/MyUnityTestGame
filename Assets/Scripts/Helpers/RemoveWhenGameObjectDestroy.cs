@@ -1,8 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using Framework;
-using Game.System;
+using Game.System.Timer;
 
 namespace Game
 {
@@ -12,8 +11,8 @@ namespace Game
         private List<IUnRegister> m_UnRegisterList = new List<IUnRegister>();
         public void AddUnRegister(IUnRegister unRegister) => m_UnRegisterList.Add(unRegister);
 
-        private List<ITimerSystem.ITimer> m_TimerList = new List<ITimerSystem.ITimer>();
-        public void AddTimer(ITimerSystem.ITimer timer) => m_TimerList.Add(timer);
+        private List<ITimer> m_TimerList = new List<ITimer>();
+        public void AddTimer(ITimer timer) => m_TimerList.Add(timer);
 
         private void OnDestroy()
         {
@@ -49,7 +48,7 @@ namespace Game
                 .AddUnRegister(self);
         }
 
-        public static void KillWhenGameObjectDestroy(this ITimerSystem.ITimer self, GameObject gameObject)
+        public static void KillWhenGameObjectDestroy(this ITimer self, GameObject gameObject)
         {
             GetRemoveWhenGameObjectDestroy(gameObject)
                 .AddTimer(self);
