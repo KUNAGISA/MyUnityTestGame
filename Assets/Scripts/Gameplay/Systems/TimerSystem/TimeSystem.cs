@@ -30,26 +30,9 @@ namespace Game.System
         /// <param name="onTickTask">回调</param>
         /// <returns>定时器</returns>
         public ITimer AddTickTask(Action<float> onTickTask, float interval = 0.0f);
-
-        /// <summary>
-        /// 系统是否暂停
-        /// </summary>
-        public bool IsPause { get; }
-
-        /// <summary>
-        /// 暂停定时器
-        /// </summary>
-        /// <param name="key"></param>
-        public void Pause(string key);
-
-        /// <summary>
-        /// 恢复定时器
-        /// </summary>
-        /// <param name="key"></param>
-        public void Resume(string key);
     }
 
-    public class TimeSystem : AbstractSystem, ITimeSystem
+    public class TimeSystem : AbstractSystem, ITimeSystem, ICanGetSystem
     {
         enum TimerStatus
         {
@@ -99,24 +82,18 @@ namespace Game.System
 
         protected override void OnInitSystem()
         {
-            var gameObject = new GameObject("TimeSystem");
-            UnityEngine.Object.DontDestroyOnLoad(gameObject);
-
-            gameObject.AddComponent<TimerComponent>()
-                .OnTick += Tick;
+            this.GetSystem<IWorldSystem>()
+                .onFrameTick += Tick;
         }
 
         public float CurrTime { get; private set; } = 0.0f;
 
         private LinkedList<Timer> m_TimerList = new LinkedList<Timer>();
 
-        private void Tick()
+        private void Tick(float delta)
         {
-            if (!IsPause)
-            {
-                CurrTime += Time.deltaTime;
-                UpdateTimerList();
-            }
+            CurrTime += delta;
+            UpdateTimerList();
         }
 
         private void UpdateTimerList()
@@ -161,26 +138,6 @@ namespace Game.System
             timer.checkTime = CurrTime + interval;
             m_TimerList.AddLast(timer);
             return timer;
-        }
-
-        private HashSet<string> m_PauseKeys = new HashSet<string>();
-
-        public bool IsPause => m_PauseKeys.Count > 0;
-
-        public void Pause(string key)
-        {
-            if (m_PauseKeys.Add(key))
-            {
-                Debug.Log(string.Format("TimerSystem pause same key \"{0}\"", key));
-            }
-        }
-
-        public void Resume(string key)
-        {
-            if (m_PauseKeys.Remove(key))
-            {
-                Debug.Log(string.Format("TimerSystem resume non-existent key \"{0}\"", key));
-            }
         }
     }
 }
