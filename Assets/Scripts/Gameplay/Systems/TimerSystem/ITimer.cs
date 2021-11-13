@@ -1,7 +1,4 @@
-﻿using System.Collections;
-using UnityEngine;
-
-namespace Game.System.Timer
+﻿namespace Game
 {
     public interface ITimer
     {

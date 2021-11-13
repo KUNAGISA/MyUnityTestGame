@@ -5,11 +5,11 @@ namespace Game
 {
     public class TimerComponent : MonoBehaviour
     {
-        public event Action OnUpdateCallback;
+        public event Action OnTick;
 
         private void Update()
         {
-            OnUpdateCallback?.Invoke();
+            OnTick?.Invoke();
         }
     }
 }

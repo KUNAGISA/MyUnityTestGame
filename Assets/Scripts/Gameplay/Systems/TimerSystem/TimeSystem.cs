@@ -2,33 +2,38 @@
 using Framework;
 using UnityEngine;
 using System.Collections.Generic;
-using Game.System.Timer;
 
 namespace Game.System
 {
     /// <summary>
-    /// 定时器系统
+    /// 时间系统
     /// </summary>
-    public interface ITimerSystem : ISystem
+    public interface ITimeSystem : ISystem
     {
+        /// <summary>
+        /// 当前时间
+        /// </summary>
         public float CurrTime { get; }
 
         /// <summary>
         /// 延迟调用
         /// </summary>
         /// <param name="interval">延迟时间</param>
-        /// <param name="onDelayCallback">回调</param>
+        /// <param name="onDelayTask">回调</param>
         /// <returns>定时器</returns>
-        public ITimer AddDelayTask(float interval, Action<float> onDelayCallback);
+        public ITimer AddDelayTask(float interval, Action<float> onDelayTask);
 
         /// <summary>
-        /// 定时回调
+        /// 定时调用
         /// </summary>
         /// <param name="interval">间隔</param>
-        /// <param name="onDelayCallback">回调</param>
+        /// <param name="onTickTask">回调</param>
         /// <returns>定时器</returns>
-        public ITimer AddTask(Action<float> onDelayCallback, float interval = 0.0f);
+        public ITimer AddTickTask(Action<float> onTickTask, float interval = 0.0f);
 
+        /// <summary>
+        /// 系统是否暂停
+        /// </summary>
         public bool IsPause { get; }
 
         /// <summary>
@@ -44,7 +49,7 @@ namespace Game.System
         public void Resume(string key);
     }
 
-    public class TimerSystem : AbstractSystem, ITimerSystem
+    public class TimeSystem : AbstractSystem, ITimeSystem
     {
         enum TimerStatus
         {
@@ -54,15 +59,17 @@ namespace Game.System
         class Timer : ITimer
         {
             public readonly float interval;
+            public readonly bool loop;
 
-            public TimerStatus status = TimerStatus.Running;
-            public Action<float> onTimerCallback;
             public float checkTime;
-
-            public Timer(float interval, Action<float> onTimerCallback)
+            public TimerStatus status = TimerStatus.Running;
+            public Action<float> onTick;
+            
+            public Timer(float interval, bool loop, Action<float> onTick)
             {
                 this.interval = interval;
-                this.onTimerCallback = onTimerCallback;
+                this.onTick = onTick;
+                this.loop = loop;
             }
 
             public bool IsInvalid => status == TimerStatus.Killed;
@@ -86,7 +93,7 @@ namespace Game.System
             public void Kill()
             {
                 status = TimerStatus.Killed;
-                onTimerCallback = null;
+                onTick = null;
             }
         }
 
@@ -96,93 +103,68 @@ namespace Game.System
             UnityEngine.Object.DontDestroyOnLoad(gameObject);
 
             gameObject.AddComponent<TimerComponent>()
-                .OnUpdateCallback += OnUpdate;
+                .OnTick += Tick;
         }
 
-        private LinkedList<Timer> m_DelayTimers = new LinkedList<Timer>();
-        private List<Timer> m_Timers = new List<Timer>();
+        public float CurrTime { get; private set; } = 0.0f;
 
-        private float m_CurrTime = 0.0f;
-        public float CurrTime => m_CurrTime;
+        private LinkedList<Timer> m_TimerList = new LinkedList<Timer>();
 
-        private void OnUpdate()
+        private void Tick()
         {
-            m_CurrTime += Time.unscaledDeltaTime;
-            OnUpdateTask();
-            OnUpdateDelayTask();
+            if (!IsPause)
+            {
+                CurrTime += Time.deltaTime;
+                UpdateTimerList();
+            }
         }
 
-        private void OnUpdateDelayTask()
+        private void UpdateTimerList()
         {
-            if (m_DelayTimers.Count <= 0)
+            if (m_TimerList.Count <= 0)
             {
                 return;
             }
 
-            var currTime = m_CurrTime;
-            var itor = m_DelayTimers.First;
-            var next = itor.Next;
-
+            var currTime = CurrTime;
+            var itor = m_TimerList.Last;
             while(itor != null)
             {
                 var timer = itor.Value;
                 if (timer.status == TimerStatus.Running && timer.checkTime <= currTime)
                 {
-                    var delta = timer.interval + (currTime - timer.checkTime);
-                    timer.onTimerCallback?.Invoke(delta);
-                    timer.Kill();
-                }
-                if (timer.status == TimerStatus.Killed)
-                {
-                    m_DelayTimers.Remove(itor);
-                }
-
-                itor = next;
-                next = itor?.Next;
-            }
-        }
-
-        private void OnUpdateTask()
-        {
-            if (m_Timers.Count <= 0)
-            {
-                return;
-            }
-
-            var currTime = m_CurrTime;
-            for(var index = m_Timers.Count - 1; index >= 0; --index)
-            {
-                var timer = m_Timers[index];
-                if (timer.status == TimerStatus.Running && timer.checkTime <= currTime)
-                {
-                    var delta = timer.interval + (currTime - timer.checkTime);
+                    var delta = timer.interval + CurrTime - timer.checkTime;
+                    timer.onTick(delta);
                     timer.checkTime = currTime + timer.interval;
-                    timer.onTimerCallback?.Invoke(delta);
+
+                    if (!timer.loop)
+                    {
+                        timer.Kill();
+                    }
                 }
+
+                itor = itor.Previous;
                 if (timer.status == TimerStatus.Killed)
                 {
-                    m_Timers.RemoveAt(index);
+                    m_TimerList.Remove(itor.Next);
                 }
             }
         }
 
-        public ITimer AddDelayTask(float interval, Action<float> onDelayCallback)
-        {
-            var timer = new Timer(interval, onDelayCallback);
-            timer.checkTime = CurrTime + interval;
-            m_DelayTimers.AddLast(timer);
-            return timer;
-        }
+        public ITimer AddDelayTask(float interval, Action<float> onDelayCallback) => CreateTimerTask(interval, false, onDelayCallback);
 
-        public ITimer AddTask(Action<float> onDelayCallback, float interval = 0.0f)
+        public ITimer AddTickTask(Action<float> onTickTask, float interval = 0.0f) => CreateTimerTask(interval, true, onTickTask);
+
+        private ITimer CreateTimerTask(float interval, bool loop, Action<float> onTick)
         {
-            var timer = new Timer(interval, onDelayCallback);
+            var timer = new Timer(interval, loop, onTick);
             timer.checkTime = CurrTime + interval;
-            m_Timers.Add(timer);
+            m_TimerList.AddLast(timer);
             return timer;
         }
 
         private HashSet<string> m_PauseKeys = new HashSet<string>();
+
         public bool IsPause => m_PauseKeys.Count > 0;
 
         public void Pause(string key)

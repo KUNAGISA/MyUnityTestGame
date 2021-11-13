@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using Framework;
-using Game.System.Timer;
 
 namespace Game
 {

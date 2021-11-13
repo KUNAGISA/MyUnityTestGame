@@ -6,7 +6,7 @@ namespace Game
     {
         protected override void Init()
         {
-            RegisterSystem<System.ITimerSystem>(new System.TimerSystem());
+            RegisterSystem<System.ITimeSystem>(new System.TimeSystem());
             RegisterSystem<System.IAssetsSystem>(new System.AssetsSystem());
 
             /// 用Addressables来管理资源
