@@ -11,9 +11,14 @@ namespace Game.System
     public interface ITimeSystem : ISystem
     {
         /// <summary>
+        /// 当前时间更变
+        /// </summary>
+        event Action OnTimeChange;
+
+        /// <summary>
         /// 当前时间
         /// </summary>
-        public float CurrTime { get; }
+        float CurrTime { get; }
 
         /// <summary>
         /// 延迟调用
@@ -21,7 +26,7 @@ namespace Game.System
         /// <param name="interval">延迟时间</param>
         /// <param name="onDelayTask">回调</param>
         /// <returns>定时器</returns>
-        public ITimer AddDelayTask(float interval, Action<float> onDelayTask);
+        ITimer AddDelayTask(float interval, Action<float> onDelayTask);
 
         /// <summary>
         /// 定时调用
@@ -29,7 +34,7 @@ namespace Game.System
         /// <param name="interval">间隔</param>
         /// <param name="onTickTask">回调</param>
         /// <returns>定时器</returns>
-        public ITimer AddTickTask(Action<float> onTickTask, float interval = 0.0f);
+        ITimer AddTickTask(Action<float> onTickTask, float interval = 0.0f);
     }
 
     public class TimeSystem : AbstractSystem, ITimeSystem, ICanGetSystem
@@ -82,21 +87,26 @@ namespace Game.System
 
         protected override void OnInitSystem()
         {
-            this.GetSystem<IWorldSystem>()
-                .onFrameTick += Tick;
+            var worldSystem = this.GetSystem<IWorldSystem>();
+
+            ///时间跟定时器分开处理，更新时间需要更优先处理
+            worldSystem.onPriorFrameTick += TickTime;
+            worldSystem.onFrameTick += TickTimerList;
         }
 
         public float CurrTime { get; private set; } = 0.0f;
 
         private LinkedList<Timer> m_TimerList = new LinkedList<Timer>();
 
-        private void Tick(float delta)
+        public event Action OnTimeChange;
+
+        private void TickTime(float delta)
         {
             CurrTime += delta;
-            UpdateTimerList();
+            OnTimeChange?.Invoke();
         }
 
-        private void UpdateTimerList()
+        private void TickTimerList(float _)
         {
             if (m_TimerList.Count <= 0)
             {
@@ -105,7 +115,7 @@ namespace Game.System
 
             var currTime = CurrTime;
             var itor = m_TimerList.Last;
-            while(itor != null)
+            while (itor != null)
             {
                 var timer = itor.Value;
                 if (timer.status == TimerStatus.Running && timer.checkTime <= currTime)

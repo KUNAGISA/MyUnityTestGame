@@ -21,6 +21,11 @@ namespace Game.System
         event Action<float> onFrameTick;
 
         /// <summary>
+        /// 优先执行的帧更新
+        /// </summary>
+        event Action<float> onPriorFrameTick;
+
+        /// <summary>
         /// 是否暂停
         /// </summary>
         bool IsPause { get; }
@@ -41,8 +46,8 @@ namespace Game.System
     public class WorldSystem : AbstractSystem, IWorldSystem
     {
         public event Action<float> onFixedTick;
-
         public event Action<float> onFrameTick;
+        public event Action<float> onPriorFrameTick;
 
         private WorldComponent m_WorldObj;
 
@@ -60,14 +65,21 @@ namespace Game.System
 
         private void Tick()
         {
-            var delta = Time.deltaTime;
-            onFrameTick?.Invoke(delta);
+            if (!IsPause)
+            {
+                var delta = Time.deltaTime;
+                onPriorFrameTick?.Invoke(delta);
+                onFrameTick?.Invoke(delta);
+            }
         }
 
         private void FixedTick()
         {
-            var delta = Time.fixedDeltaTime;
-            onFixedTick?.Invoke(delta);
+            if (!IsPause)
+            {
+                var delta = Time.fixedDeltaTime;
+                onFixedTick?.Invoke(delta);
+            }
         }
 
         private HashSet<string> m_PauseSet = new HashSet<string>();

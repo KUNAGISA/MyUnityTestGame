@@ -5,8 +5,6 @@ using UnityEngine;
 
 namespace Game
 {
-
-
     public abstract class AbstractsController : MonoBehaviour, IController
     {
         IArchitecture IBelongArchiecture.GetArchitecture()
