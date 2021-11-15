@@ -7,7 +7,7 @@ namespace Game
     {
         protected void Start()
         {
-            this.SendEvent(new Event.PushViewEvent(ViewDefine.ViewName.TestView));
+            this.GetSystem<System.IViewSystem>().Push(ViewDefine.ViewName.TestView);
         }
     }
 }

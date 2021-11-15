@@ -36,20 +36,14 @@ namespace Game.System
                 return;
             }
 
-            /// 之后考虑要不要将ViewManager改成ViewSystem
-            var viewManager = Object.FindObjectOfType<Manager.View.ViewManager>();
-            if (viewManager == null)
+            var viewSystem = this.GetSystem<IViewSystem>();
+            if (viewSystem.IsShowView(ViewDefine.ViewName.PauseView))
             {
-                return;
-            }
-
-            if (viewManager.IsShowView(ViewDefine.ViewName.PauseView))
-            {
-                viewManager.Pop(ViewDefine.ViewName.PauseView);
+                viewSystem.Pop(ViewDefine.ViewName.PauseView);
             }
             else
             {
-                viewManager.Push(ViewDefine.ViewName.PauseView);
+                viewSystem.Push(ViewDefine.ViewName.PauseView);
             }
         }
 

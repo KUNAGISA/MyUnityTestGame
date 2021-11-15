@@ -44,11 +44,7 @@ namespace Game.Manager.View
 
         protected void Awake()
         {
-            this.RegisterEvent((in Event.PushViewEvent e) => Push(e.viewName))
-                .UnRegisterWhenGameObjectDestroy(gameObject);
-            this.RegisterEvent((in Event.PopViewEvent e) => Pop(e.viewName))
-                .UnRegisterWhenGameObjectDestroy(gameObject);
-
+            this.GetSystem<System.IViewSystem>().BindViewRoot(this);
             m_LoadAsyncMask.SetActive(false);
         }
 
