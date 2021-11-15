@@ -6,11 +6,30 @@ namespace Game.Manager.View
 {
     public interface IViewManager
     {
+        /// <summary>
+        /// 关闭界面
+        /// </summary>
+        /// <param name="viewName">界面名字</param>
         public void Pop(ViewDefine.ViewName viewName);
 
+        /// <summary>
+        /// 关闭界面
+        /// </summary>
+        /// <param name="view">界面实例</param>
         public void Pop(IView view);
 
+        /// <summary>
+        /// 打开界面
+        /// </summary>
+        /// <param name="viewName">界面名字</param>
         public void Push(ViewDefine.ViewName viewName);
+
+        /// <summary>
+        /// 是否界面已经显示
+        /// </summary>
+        /// <param name="viewName">界面名字</param>
+        /// <returns></returns>
+        public bool IsShowView(ViewDefine.ViewName viewName);
     }
 
     public class ViewManager : AbstractsController, IViewManager
@@ -58,6 +77,15 @@ namespace Game.Manager.View
             await assetsSystem.LoadAssetsAsync<GameObject>(viewPath);
 
             CheckViewQueue();
+        }
+
+        public bool IsShowView(ViewDefine.ViewName viewName)
+        {
+            if (m_PushViewQueue.Contains(viewName))
+            {
+                return true;
+            }
+            return m_ViewPanel.IsShowView(viewName);
         }
 
         /// <summary>

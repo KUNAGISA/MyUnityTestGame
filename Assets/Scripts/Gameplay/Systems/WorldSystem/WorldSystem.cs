@@ -26,6 +26,11 @@ namespace Game.System
         event Action<float> onPriorFrameTick;
 
         /// <summary>
+        /// 运行状态更变，传入是否暂停
+        /// </summary>
+        event Action<bool> onRunStatusChange;
+
+        /// <summary>
         /// 是否暂停
         /// </summary>
         bool IsPause { get; }
@@ -48,6 +53,7 @@ namespace Game.System
         public event Action<float> onFixedTick;
         public event Action<float> onFrameTick;
         public event Action<float> onPriorFrameTick;
+        public event Action<bool> onRunStatusChange;
 
         private WorldComponent m_WorldObj;
 
@@ -115,6 +121,7 @@ namespace Game.System
         {
             var isPause = IsPause;
             Time.timeScale = isPause ? 0 : 1;
+            onRunStatusChange?.Invoke(isPause);
         }
     }
 }

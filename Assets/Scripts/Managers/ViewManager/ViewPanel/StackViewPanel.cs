@@ -8,6 +8,12 @@ namespace Game.Manager.View
     {
         List<IView> m_ViewStack = new List<IView>();
 
+        public override bool IsShowView(ViewDefine.ViewName viewName)
+        {
+            var view = m_ViewStack.Find((v) => v.ViewName == viewName);
+            return view != null;
+        }
+
         public override void Pop(IView view)
         {
             var viewIndex = m_ViewStack.FindLastIndex((v) => v.Equals(view));
@@ -23,6 +29,7 @@ namespace Game.Manager.View
         public override void Push(IView view)
         {
             view.SetParent(gameObject.transform);
+            m_ViewStack.Add(view);
         }
 
         private void PopViewByIndex(int viewIndex)

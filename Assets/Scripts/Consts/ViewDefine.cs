@@ -9,12 +9,14 @@ namespace Game
     {
         public enum ViewName
         { 
-            TestView
+            TestView,
+            PauseView,
         }
 
         private static readonly Dictionary<ViewName, string> ViewDefineMap = new Dictionary<ViewName, string>
         {
-            {ViewName.TestView, "Prefabs/Views/TestView.prefab" }
+            {ViewName.TestView, "Prefabs/Views/TestView.prefab" },
+            {ViewName.PauseView, "Prefabs/Views/PauseView.prefab" },
         };
 
         public static string GetViewPath(ViewName viewName)
