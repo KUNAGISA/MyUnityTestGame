@@ -5,8 +5,14 @@ using UnityEngine.InputSystem;
 namespace Game
 {
     [DisallowMultipleComponent]
+    [RequireComponent(typeof(Rigidbody2D))]
     public class PlayerController : AbstractsController, CustomInputAction.IPlayerActions
     {
+        private Vector2 m_MoveFace = Vector2.zero;
+
+        [SerializeField]
+        private float m_MoveSpeed = 10.0f;
+
         private void Start()
         {
             this.GetSystem<System.IInputSystem>().SetPlayerCallbacks(this);
@@ -24,10 +30,10 @@ namespace Game
 
         private void FixedTick(float _)
         {
-            GetComponent<Rigidbody2D>().velocity = m_MoveFace;
+            var ridgidBody2d = GetComponent<Rigidbody2D>();
+            ridgidBody2d.velocity = new Vector2(m_MoveFace.x * m_MoveSpeed, ridgidBody2d.velocity.y);
+            Debug.Log(ridgidBody2d.velocity);
         }
-
-        private Vector2 m_MoveFace = Vector2.zero;
 
         void CustomInputAction.IPlayerActions.OnMove(InputAction.CallbackContext context)
         {
