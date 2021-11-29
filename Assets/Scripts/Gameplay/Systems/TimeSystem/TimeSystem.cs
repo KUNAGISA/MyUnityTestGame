@@ -37,7 +37,7 @@ namespace Game.System
         ITimer AddTickTask(Action<float> onTickTask, float interval = 0.0f);
     }
 
-    public class TimeSystem : BaseSystem, ITimeSystem, ICanGetSystem
+    public class TimeSystem : BaseSystem, ITimeSystem
     {
         enum TimerStatus
         {
