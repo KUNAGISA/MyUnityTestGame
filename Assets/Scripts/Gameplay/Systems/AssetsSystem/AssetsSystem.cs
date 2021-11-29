@@ -22,7 +22,7 @@ namespace Game.System
         public void Cleanup();
     }
 
-    public class AssetsSystem : AbstractSystem, IAssetsSystem
+    public class AssetsSystem : BaseSystem, IAssetsSystem
     {
         private readonly Dictionary<string, UnityEngine.Object> m_AssetCacheMap = new Dictionary<string, UnityEngine.Object>();
 

@@ -9,7 +9,7 @@ namespace Game.System
         void SetPlayerCallbacks(CustomInputAction.IPlayerActions input);
     }
 
-    public class InputSystem : AbstractSystem, IInputSystem, ICanGetSystem, CustomInputAction.IHotKeyActions
+    public class InputSystem : BaseSystem, IInputSystem, ICanGetSystem, CustomInputAction.IHotKeyActions
     {
         private readonly CustomInputAction m_InputActions = new CustomInputAction();
 

@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Game
 {
-    public class TestComponent : AbstractsController, ICanGetUtility, ICanSendEvent
+    public class TestComponent : BaseMonoController, ICanGetUtility, ICanSendEvent
     {
         protected void Start()
         {

@@ -32,7 +32,7 @@ namespace Game.Manager.View
         public bool IsShowView(ViewDefine.ViewName viewName);
     }
 
-    public class ViewManager : AbstractsController, IViewManager
+    public class ViewManager : BaseMonoController, IViewManager
     {
         [SerializeField]
         private BaseViewPanel m_ViewPanel;

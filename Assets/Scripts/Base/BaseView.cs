@@ -5,7 +5,7 @@ using UnityEngine;
 namespace Game
 {
     [DisallowMultipleComponent]
-    public abstract class BaseView : AbstractsController, IView
+    public abstract class BaseView : BaseMonoController, IView
     {
         private readonly WeakReference<IViewManager> m_ViewManager = new WeakReference<IViewManager>(null);
 

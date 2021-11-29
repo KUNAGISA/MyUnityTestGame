@@ -33,7 +33,7 @@ namespace Game.System
         bool IsShowView(ViewDefine.ViewName viewName);
     }
 
-    public class ViewSystem : AbstractSystem, IViewSystem
+    public class ViewSystem : BaseSystem, IViewSystem
     {
         private WeakReference<IViewManager> m_ViewManager = new WeakReference<IViewManager>(null);
 

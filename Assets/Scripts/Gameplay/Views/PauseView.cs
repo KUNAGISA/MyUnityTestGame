@@ -9,9 +9,10 @@ namespace Game.View
             this.GetSystem<System.IWorldSystem>().Pause("PauseView");
         }
 
-        private void OnDestroy()
+        protected override void OnDestroy()
         {
             this.GetSystem<System.IWorldSystem>().Resume("PauseView");
+            base.OnDestroy();
         }
     }
 }
