@@ -35,6 +35,14 @@ namespace Game
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""Jump"",
+                    ""type"": ""Button"",
+                    ""id"": ""4d40be33-0d43-4a9b-b786-5adf003aafb0"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -222,6 +230,17 @@ namespace Game
                     ""processors"": """",
                     ""groups"": ""XR"",
                     ""action"": ""Fire"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""52243166-cb6d-4b2b-959b-cfef6e8a6e95"",
+                    ""path"": ""<Keyboard>/space"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""Jump"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -828,6 +847,7 @@ namespace Game
             m_Player = asset.FindActionMap("Player", throwIfNotFound: true);
             m_Player_Move = m_Player.FindAction("Move", throwIfNotFound: true);
             m_Player_Fire = m_Player.FindAction("Fire", throwIfNotFound: true);
+            m_Player_Jump = m_Player.FindAction("Jump", throwIfNotFound: true);
             // HotKey
             m_HotKey = asset.FindActionMap("HotKey", throwIfNotFound: true);
             m_HotKey_Pause = m_HotKey.FindAction("Pause", throwIfNotFound: true);
@@ -894,12 +914,14 @@ namespace Game
         private IPlayerActions m_PlayerActionsCallbackInterface;
         private readonly InputAction m_Player_Move;
         private readonly InputAction m_Player_Fire;
+        private readonly InputAction m_Player_Jump;
         public struct PlayerActions
         {
             private @CustomInputAction m_Wrapper;
             public PlayerActions(@CustomInputAction wrapper) { m_Wrapper = wrapper; }
             public InputAction @Move => m_Wrapper.m_Player_Move;
             public InputAction @Fire => m_Wrapper.m_Player_Fire;
+            public InputAction @Jump => m_Wrapper.m_Player_Jump;
             public InputActionMap Get() { return m_Wrapper.m_Player; }
             public void Enable() { Get().Enable(); }
             public void Disable() { Get().Disable(); }
@@ -915,6 +937,9 @@ namespace Game
                     @Fire.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnFire;
                     @Fire.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnFire;
                     @Fire.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnFire;
+                    @Jump.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnJump;
+                    @Jump.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnJump;
+                    @Jump.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnJump;
                 }
                 m_Wrapper.m_PlayerActionsCallbackInterface = instance;
                 if (instance != null)
@@ -925,6 +950,9 @@ namespace Game
                     @Fire.started += instance.OnFire;
                     @Fire.performed += instance.OnFire;
                     @Fire.canceled += instance.OnFire;
+                    @Jump.started += instance.OnJump;
+                    @Jump.performed += instance.OnJump;
+                    @Jump.canceled += instance.OnJump;
                 }
             }
         }
@@ -1116,6 +1144,7 @@ namespace Game
         {
             void OnMove(InputAction.CallbackContext context);
             void OnFire(InputAction.CallbackContext context);
+            void OnJump(InputAction.CallbackContext context);
         }
         public interface IHotKeyActions
         {

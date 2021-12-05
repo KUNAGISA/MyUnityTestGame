@@ -9,6 +9,8 @@ namespace Game
 
         public event Action onFixedTick;
 
+        public event Action onLateFrameTick;
+
         private void FixedUpdate()
         {
             onFixedTick?.Invoke();
@@ -17,6 +19,11 @@ namespace Game
         private void Update()
         {
             onFrameTick?.Invoke();
+        }
+
+        private void LateUpdate()
+        {
+            onLateFrameTick?.Invoke();
         }
     }
 }

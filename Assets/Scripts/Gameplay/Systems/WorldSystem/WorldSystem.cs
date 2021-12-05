@@ -26,9 +26,9 @@ namespace Game.System
         event Action<float> onPriorFrameTick;
 
         /// <summary>
-        /// 运行状态更变，传入是否暂停
+        /// 最后执行的帧更新
         /// </summary>
-        event Action<bool> onRunStatusChange;
+        event Action<float> onLateFrameTick;
 
         /// <summary>
         /// 是否暂停
@@ -48,12 +48,12 @@ namespace Game.System
         void Resume(string key);
     }
 
-    public class WorldSystem : AbstractSystem, IWorldSystem
+    public class WorldSystem : BaseSystem, IWorldSystem
     {
         public event Action<float> onFixedTick;
         public event Action<float> onFrameTick;
         public event Action<float> onPriorFrameTick;
-        public event Action<bool> onRunStatusChange;
+        public event Action<float> onLateFrameTick;
 
         private WorldComponent m_WorldObj;
 
@@ -67,6 +67,7 @@ namespace Game.System
             m_WorldObj = worldObj.AddComponent<WorldComponent>();
             m_WorldObj.onFrameTick += Tick;
             m_WorldObj.onFixedTick += FixedTick;
+            m_WorldObj.onLateFrameTick += LateTick;
         }
 
         private void Tick()
@@ -85,6 +86,15 @@ namespace Game.System
             {
                 var delta = Time.fixedDeltaTime;
                 onFixedTick?.Invoke(delta);
+            }
+        }
+
+        private void LateTick()
+        {
+            if (!IsPause)
+            {
+                var delta = Time.deltaTime;
+                onLateFrameTick?.Invoke(delta);
             }
         }
 
@@ -121,7 +131,7 @@ namespace Game.System
         {
             var isPause = IsPause;
             Time.timeScale = isPause ? 0 : 1;
-            onRunStatusChange?.Invoke(isPause);
+            this.SendEvent(new Event.WorldRunChangeEvent(isPause));
         }
     }
 }

@@ -1,5 +1,4 @@
 ﻿using Framework;
-using UnityEngine;
 using UnityEngine.InputSystem;
 
 namespace Game.System
@@ -9,19 +8,27 @@ namespace Game.System
         void SetPlayerCallbacks(CustomInputAction.IPlayerActions input);
     }
 
-    public class InputSystem : BaseSystem, IInputSystem, ICanGetSystem, CustomInputAction.IHotKeyActions
+    public partial class InputSystem : BaseSystem, IInputSystem
     {
         private readonly CustomInputAction m_InputActions = new CustomInputAction();
 
         protected override void OnInitSystem()
         {
-            m_InputActions.Enable();
-
             var worldSystem = this.GetSystem<IWorldSystem>();
-            worldSystem.onRunStatusChange += OnWorldRunChange;
-            OnWorldRunChange(worldSystem.IsPause);
+            SetPlayerActionEnable(worldSystem.IsPause);
 
-            m_InputActions.HotKey.SetCallbacks(this);
+            this.RegisterEvent((in Event.WorldRunChangeEvent @event) => SetPlayerActionEnable(@event.isPause));
+
+            m_InputActions.Enable();
+            m_InputActions.HotKey.SetCallbacks(CreateInputAction<HotKeyAction>());
+        }
+
+        private TInputAction CreateInputAction<TInputAction>() where TInputAction : class, IInputAction, new()
+        {
+            var inputAction = new TInputAction();
+            inputAction.SetInputSystem(this);
+            inputAction.InitAction();
+            return inputAction;
         }
 
         public void SetPlayerCallbacks(CustomInputAction.IPlayerActions input)
@@ -29,33 +36,15 @@ namespace Game.System
             m_InputActions.Player.SetCallbacks(input);
         }
 
-        public void OnPause(InputAction.CallbackContext context)
+        private void SetPlayerActionEnable(bool IsEnabled)
         {
-            if (!context.canceled)
-            {
-                return;
-            }
-
-            var viewSystem = this.GetSystem<IViewSystem>();
-            if (viewSystem.IsShowView(ViewDefine.ViewName.PauseView))
-            {
-                viewSystem.Pop(ViewDefine.ViewName.PauseView);
-            }
-            else
-            {
-                viewSystem.Push(ViewDefine.ViewName.PauseView);
-            }
-        }
-
-        private void OnWorldRunChange(bool isPause)
-        {
-            if (isPause)
-            {
-                m_InputActions.Player.Disable();
-            }
-            else
+            if (IsEnabled)
             {
                 m_InputActions.Player.Enable();
+            }
+            else
+            {
+                m_InputActions.Player.Disable();
             }
         }
     }

@@ -31,7 +31,6 @@ namespace Game
         {
             var ridgidBody2d = GetComponent<Rigidbody2D>();
             ridgidBody2d.velocity = new Vector2(m_MoveFace.x * m_MoveSpeed, ridgidBody2d.velocity.y);
-            Debug.Log(ridgidBody2d.velocity);
         }
 
         void CustomInputAction.IPlayerActions.OnMove(InputAction.CallbackContext context)
@@ -41,6 +40,16 @@ namespace Game
 
         void CustomInputAction.IPlayerActions.OnFire(InputAction.CallbackContext context)
         {
+            
+        }
+
+        public void OnJump(InputAction.CallbackContext context)
+        {
+            Debug.Log(context.ReadValueAsButton());
+            if (context.ReadValueAsButton())
+            {
+                GetComponent<Rigidbody2D>().AddForce(new Vector2(0.0f, 100.0f));
+            }
         }
     }
 }

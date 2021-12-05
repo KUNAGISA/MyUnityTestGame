@@ -37,7 +37,7 @@ namespace Game.System
         ITimer AddTickTask(Action<float> onTickTask, float interval = 0.0f);
     }
 
-    public class TimeSystem : BaseSystem, ITimeSystem
+    public class TimeSystem : BaseSystem, ITimeSystem, ICanFollowWorldFrameTick, ICanFollowWorldPriorFrameTick
     {
         enum TimerStatus
         {
@@ -87,11 +87,8 @@ namespace Game.System
 
         protected override void OnInitSystem()
         {
-            var worldSystem = this.GetSystem<IWorldSystem>();
-
-            ///时间跟定时器分开处理，更新时间需要更优先处理
-            worldSystem.onPriorFrameTick += TickTime;
-            worldSystem.onFrameTick += TickTimerList;
+            this.SetWorldFrameTick(TickTime);
+            this.SetWorldPriorFrameTick(TickTimerList);
         }
 
         public float CurrTime { get; private set; } = 0.0f;
