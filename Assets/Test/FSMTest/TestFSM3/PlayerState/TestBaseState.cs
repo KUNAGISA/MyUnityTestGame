@@ -1,5 +1,4 @@
 ﻿using FSM3;
-using System;
 
 namespace TestFSM3
 {
