@@ -44,6 +44,11 @@ namespace FSM
         void TickState(Entity entity, ITransition<ETransition> transition);
     }
 
+    /// <summary>
+    /// 状态基类
+    /// </summary>
+    /// <typeparam name="Entity"></typeparam>
+    /// <typeparam name="ETransition"></typeparam>
     public class BaseState<Entity, ETransition> : IState<Entity, ETransition>
     {
         void IState<Entity, ETransition>.EnterState(Entity entity, ITransition<ETransition> transition)
