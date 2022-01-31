@@ -29,7 +29,7 @@ namespace FSM.Test
             if ((face > 0 && posx >= 5.0f) || (face < 0 && posx <= -5.0f))
             {
                 entity.face = -entity.face;
-                transition.ChangeState(EntityStateTransition.MoveFinish);
+                transition.TransState(EntityStateTransition.MoveFinish);
             }
         }
     }

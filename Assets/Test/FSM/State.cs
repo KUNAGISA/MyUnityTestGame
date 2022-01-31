@@ -12,7 +12,7 @@ namespace FSM
         /// 转换状态
         /// </summary>
         /// <param name="transition">转换条件</param>
-        void ChangeState(ETransition transition);
+        void TransState(ETransition transition);
     }
 
     /// <summary>

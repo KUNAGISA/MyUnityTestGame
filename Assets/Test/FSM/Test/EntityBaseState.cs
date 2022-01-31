@@ -25,7 +25,7 @@ namespace FSM.Test
             base.OnTickState(entity, transition);
             if (entity.WaitEndTime <= Time.time)
             {
-                transition.ChangeState(EntityStateTransition.WaitFinish);
+                transition.TransState(EntityStateTransition.WaitFinish);
             }
         }
     }

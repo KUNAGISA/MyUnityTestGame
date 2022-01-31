@@ -2,7 +2,6 @@ namespace FSM.Test
 {
     public enum EntityStateTransition
     {
-        StateInit,
         WaitFinish,
         MoveFinish,
     }

@@ -11,22 +11,20 @@ namespace FSM.Test
 
         public float speed = 1.0f;
 
-        public float WaitEndTime { get; set; }
+        [SerializeField]
+        private float m_WaitEndTime = 0.0f;
+        public float WaitEndTime { get => m_WaitEndTime; set => m_WaitEndTime = value; }
 
         private IStateMachine<Player, EntityStateTransition> m_StateMachine = null;
 
         private void Awake()
         {
-            m_StateMachine = new StateMachine<Player, EntityStateTransition>(this);
+            m_StateMachine = new StateMachine<Player, EntityStateTransition>();
 
-            m_StateMachine.RegisterState(new EntityIdleState())
-                .Transition(EntityStateTransition.StateInit)
-                .Transition(EntityStateTransition.MoveFinish);
+            m_StateMachine.RegisterState(new EntityIdleState(), EntityStateTransition.MoveFinish);
+            m_StateMachine.RegisterState(new PlayerMoveState(), EntityStateTransition.WaitFinish);
 
-            m_StateMachine.RegisterState(new PlayerMoveState())
-                .Transition(EntityStateTransition.WaitFinish);
-
-            m_StateMachine.ChangeState(EntityStateTransition.StateInit);
+            m_StateMachine.InitStateMachine(this, EntityStateTransition.MoveFinish);
         }
 
         private void Update()
