@@ -1,3 +1,4 @@
+ï»¿using System;
 using System.Collections.Generic;
 
 namespace FSM
@@ -5,22 +6,22 @@ namespace FSM
     public interface IStateMachine<Entity, ETransition>
     {
         /// <summary>
-        /// ×¢²áÍêËùÓĞ×´Ì¬ºóµ÷ÓÃ£¬³õÊ¼»¯×´Ì¬»ú
+        /// æ³¨å†Œå®Œæ‰€æœ‰çŠ¶æ€åè°ƒç”¨ï¼Œåˆå§‹åŒ–çŠ¶æ€æœº
         /// </summary>
-        /// <param name="entity">×´Ì¬»ú¿ØÖÆµÄÊµÌå</param>
-        /// <param name="transition">³õÊ¼ÇĞ»»</param>
-        void InitStateMachine(Entity entity, ETransition transition = default);
+        /// <param name="entity">çŠ¶æ€æœºæ§åˆ¶çš„å®ä½“</param>
+        /// <param name="initState">åˆå§‹çŠ¶æ€ï¼Œå¦‚æœä¸å¡«æˆ–è€…æ²¡æœ‰æ³¨å†Œçš„ï¼Œä¼šä½¿ç”¨ç¬¬ä¸€ä¸ªæ³¨å†Œçš„çŠ¶æ€</param>
+        void InitStateMachine(Entity entity, Type initState = null);
 
         /// <summary>
-        /// ×¢²á×´Ì¬
+        /// æ³¨å†ŒçŠ¶æ€
         /// </summary>
-        /// <typeparam name="State">×´Ì¬</typeparam>
-        /// <param name="state">×´Ì¬ÊµÀı</param>
-        /// <param name="transitions">ÇĞ»»µ½¸Ã×´Ì¬µÄÌõ¼ş</param>
+        /// <typeparam name="State">çŠ¶æ€</typeparam>
+        /// <param name="state">çŠ¶æ€å®ä¾‹</param>
+        /// <param name="transitions">åˆ‡æ¢åˆ°è¯¥çŠ¶æ€çš„æ¡ä»¶</param>
         void RegisterState<State>(State state, params ETransition[] transitions) where State : IState<Entity, ETransition>;
 
         /// <summary>
-        /// ×´Ì¬»úÖ¡¶¨Ê±Æ÷
+        /// çŠ¶æ€æœºå¸§å®šæ—¶å™¨
         /// </summary>
         void TickStateMachine();
     }
@@ -42,7 +43,7 @@ namespace FSM
             {
                 if (m_TransitionMap.ContainsKey(transition))
                 {
-                    UnityEngine.Debug.LogWarning("ÖØ¸´Ìí¼Ó×ª»»" + transition);
+                    UnityEngine.Debug.LogWarning("é‡å¤æ·»åŠ è½¬æ¢" + transition);
                 }
                 else
                 {
@@ -51,11 +52,14 @@ namespace FSM
             }
         }
 
-        void IStateMachine<Entity, ETransition>.InitStateMachine(Entity entity, ETransition transition)
+        void IStateMachine<Entity, ETransition>.InitStateMachine(Entity entity, Type initState)
         {
             m_Entity = entity;
             OnInitStateMachine();
-            (this as ITransition<ETransition>).TransState(transition);
+
+            var index = Math.Max(m_States.FindIndex((state) => state.GetType().GetHashCode() == initState.GetHashCode()), 0);
+            m_CurrState = m_States[index];
+            m_CurrState.EnterState(m_Entity, this);
         }
 
         void IStateMachine<Entity, ETransition>.TickStateMachine()
@@ -75,12 +79,12 @@ namespace FSM
         }
 
         /// <summary>
-        /// ³õÊ¼»¯×´Ì¬»ú
+        /// åˆå§‹åŒ–çŠ¶æ€æœº
         /// </summary>
         protected virtual void OnInitStateMachine() { }
 
         /// <summary>
-        /// ×´Ì¬»úÖ¡¸üĞÂ
+        /// çŠ¶æ€æœºå¸§æ›´æ–°
         /// </summary>
         protected virtual void OnTickStateMachine() { }
     }
