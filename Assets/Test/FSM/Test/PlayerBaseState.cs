@@ -26,6 +26,18 @@ namespace FSM.Test
 
     public class PlayerMoveState : PlayerBaseState, IPlayerStateReceiveMsg<StateMsg>
     {
+        protected override void OnEnterState(Player entity, ITransition<EntityStateTransition> transition)
+        {
+            base.OnEnterState(entity, transition);
+            entity.SetAnimatorBool("move", true);
+        }
+
+        protected override void OnExitState(Player entity, ITransition<EntityStateTransition> transition)
+        {
+            entity.SetAnimatorBool("move", false);
+            base.OnExitState(entity, transition);
+        }
+
         protected override void OnTickState(Player entity, ITransition<EntityStateTransition> transition)
         {
             base.OnTickState(entity, transition);

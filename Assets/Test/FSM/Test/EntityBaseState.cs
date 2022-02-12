@@ -17,7 +17,15 @@ namespace FSM.Test
         protected override void OnEnterState(IEntity entity, ITransition<EntityStateTransition> transition)
         {
             base.OnEnterState(entity, transition);
+
+            entity.SetAnimatorBool("idle", true);
             entity.WaitEndTime = Time.time + 5.0f;
+        }
+
+        protected override void OnExitState(IEntity entity, ITransition<EntityStateTransition> transition)
+        {
+            entity.SetAnimatorBool("idle", false);
+            base.OnExitState(entity, transition);
         }
 
         protected override void OnTickState(IEntity entity, ITransition<EntityStateTransition> transition)

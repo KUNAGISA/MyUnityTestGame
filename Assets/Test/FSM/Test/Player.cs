@@ -33,5 +33,10 @@ namespace FSM.Test
         {
             m_StateMachine.TickStateMachine();
         }
+
+        public void SetAnimatorBool(string tag, bool isTag)
+        {
+            GetComponent<Animator>()?.SetBool(tag, isTag);
+        }
     }
 }

@@ -9,5 +9,7 @@ namespace FSM.Test
     public interface IEntity
     {
         public float WaitEndTime { get; set; }
+
+        void SetAnimatorBool(string tag, bool isTag);
     }
 }
