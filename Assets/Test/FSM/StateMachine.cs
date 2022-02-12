@@ -24,6 +24,8 @@ namespace FSM
         /// 状态机帧定时器
         /// </summary>
         void TickStateMachine();
+
+        void SendMessage<TMessage>(in TMessage message);
     }
 
     public class StateMachine<Entity, ETransition> : IStateMachine<Entity, ETransition>, ITransition<ETransition>
@@ -76,6 +78,12 @@ namespace FSM
                 m_CurrState = m_States[index];
                 m_CurrState?.EnterState(m_Entity, this);
             }
+        }
+
+        public void SendMessage<TMessage>(in TMessage message)
+        {
+            var receive = m_CurrState as IReceiveMsg<TMessage, Entity, ETransition>;
+            receive?.ReceiveMsg(m_Entity, this, in message);
         }
 
         /// <summary>

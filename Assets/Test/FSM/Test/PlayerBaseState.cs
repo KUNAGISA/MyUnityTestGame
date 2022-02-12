@@ -9,12 +9,22 @@ namespace FSM.Test
 
     }
 
+    public interface IPlayerStateReceiveMsg<TMessage> : IReceiveMsg<TMessage, Player, EntityStateTransition>
+    {
+
+    }
+
     public class PlayerBaseState : BaseState<Player, EntityStateTransition>, IPlayerState
     {
 
     }
 
-    public class PlayerMoveState : PlayerBaseState
+    public struct StateMsg
+    { 
+    }
+
+
+    public class PlayerMoveState : PlayerBaseState, IPlayerStateReceiveMsg<StateMsg>
     {
         protected override void OnTickState(Player entity, ITransition<EntityStateTransition> transition)
         {
@@ -31,6 +41,11 @@ namespace FSM.Test
                 entity.face = -entity.face;
                 transition.TransState(EntityStateTransition.MoveFinish);
             }
+        }
+
+        void IReceiveMsg<StateMsg, Player, EntityStateTransition>.ReceiveMsg(Player entity, ITransition<EntityStateTransition> transition, in StateMsg message)
+        {
+
         }
     }
 }

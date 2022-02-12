@@ -25,6 +25,8 @@ namespace FSM.Test
             m_StateMachine.RegisterState(new PlayerMoveState(), EntityStateTransition.WaitFinish);
 
             m_StateMachine.InitStateMachine(this, typeof(EntityIdleState));
+
+            m_StateMachine.SendMessage(new StateMsg());
         }
 
         private void Update()
