@@ -27,21 +27,22 @@ namespace Game {
             return viewPath;
         }
 
-        public static string GetUIPath(ViewName viewName) {
-            var realViewName = GetViewPath(viewName);
-            if (string.IsNullOrEmpty(realViewName)) {
+        public static string GetUICodePath(ViewName viewName) {
+            var viewPrefabPath = GetViewPath(viewName);
+            if (string.IsNullOrEmpty(viewPrefabPath)) {
                 return null;
             }
-            var realUIName = realViewName.Replace("Prefabs/Views/", "").Replace(".prefab", "");
+            var realUIName = viewPrefabPath.Replace("Prefabs/Views/", "").Replace(".prefab", "");
             var arr = realUIName.Split('@');
             if (arr == null || arr.Length < 1) {
                 Debug.LogWarning("[Nick] 预制体UI名 规范错误 需要添加 @ xxx");
                 return null;
             }
+            var uiCode = arr[0];
             var uiFile = arr[1];
-            string path = Application.dataPath + "/UICode/" + uiFile + "/" + realViewName;
-            if (Directory.Exists(path)) {
-                Debug.Log("[Nick] Find Path" + path);
+            string path = Application.dataPath + string.Format("/UICode/Module/{0}/UIGen/{1}.cs", uiFile, uiCode);
+            if (File.Exists(path)) {
+                Debug.Log("[Nick] uiCode Path" + path);
                 return path;
             }
             else {

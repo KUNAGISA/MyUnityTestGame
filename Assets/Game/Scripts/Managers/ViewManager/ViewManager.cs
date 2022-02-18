@@ -112,7 +112,6 @@ namespace Game.Manager.View
                 var view = Instantiate(prefab).GetComponent<IView>();
                 view.SetManager(this);
                 view.SetViewName(viewName);
-                view.InitAnalysis();
                 m_ViewPanel.Push(view);
             }
             CheckLoadAsyncMask();

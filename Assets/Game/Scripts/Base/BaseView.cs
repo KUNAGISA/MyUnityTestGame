@@ -24,7 +24,6 @@ namespace Game {
 
         void IView.SetViewName(ViewDefine.ViewName viewName) {
             m_ViewName = viewName;
- 
         }
 
         protected void PopSelf() {
@@ -34,13 +33,7 @@ namespace Game {
         }
 
         void IAnalysisUI.InitAnalysis() {
-            var uiPath = ViewDefine.GetUIPath(m_ViewName);
-            if (string.IsNullOrEmpty(uiPath)) {
-                return;
-            }
-            // if (Directory.Exists(path)) {
-            //
-            // }
+
         }
     }
 }
