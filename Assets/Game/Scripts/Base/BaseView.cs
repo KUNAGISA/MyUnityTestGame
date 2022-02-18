@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Game {
     [DisallowMultipleComponent]
-    public abstract class BaseView : BaseMonoController, IView, IAnalysisUI {
+    public abstract class BaseView : BaseMonoController, IView {
         private readonly WeakReference<IViewManager> m_ViewManager = new WeakReference<IViewManager>(null);
 
         private ViewDefine.ViewName m_ViewName;
@@ -24,6 +24,7 @@ namespace Game {
 
         void IView.SetViewName(ViewDefine.ViewName viewName) {
             m_ViewName = viewName;
+ 
         }
 
         protected void PopSelf() {
@@ -32,9 +33,11 @@ namespace Game {
             }
         }
 
-        public void InitAnalysis() {
-            var basePath = ViewDefine.GetViewPath(m_ViewName);
-
+        void IAnalysisUI.InitAnalysis() {
+            var uiPath = ViewDefine.GetUIPath(m_ViewName);
+            if (string.IsNullOrEmpty(uiPath)) {
+                return;
+            }
             // if (Directory.Exists(path)) {
             //
             // }

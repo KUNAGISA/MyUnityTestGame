@@ -1,12 +1,10 @@
 ﻿using UnityEngine;
 
-namespace Game.Manager.View
-{
+namespace Game.Manager.View {
     /// <summary>
     /// 受ViewManager管理的界面接口
     /// </summary>
-    public interface IView
-    {
+    public interface IView : IAnalysisUI {
         public ViewDefine.ViewName ViewName { get; }
 
         void SetViewName(ViewDefine.ViewName viewName);

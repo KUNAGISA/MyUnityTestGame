@@ -8,12 +8,16 @@ namespace Game {
         public enum ViewName {
             TestView,
             PauseView,
+
+            UIAnalysis_TestView,
         }
 
         private static readonly Dictionary<ViewName, string> ViewDefineMap = new Dictionary<ViewName, string>
         {
             {ViewName.TestView, "Prefabs/Views/TestView.prefab" },
             {ViewName.PauseView, "Prefabs/Views/PauseView.prefab" },
+            {ViewName.UIAnalysis_TestView, "Prefabs/Views/TestUI@Test.prefab" },
+
         };
 
         public static string GetViewPath(ViewName viewName) {
@@ -25,6 +29,9 @@ namespace Game {
 
         public static string GetUIPath(ViewName viewName) {
             var realViewName = GetViewPath(viewName);
+            if (string.IsNullOrEmpty(realViewName)) {
+                return null;
+            }
             var realUIName = realViewName.Replace("Prefabs/Views/", "").Replace(".prefab", "");
             var arr = realUIName.Split('@');
             if (arr == null || arr.Length < 1) {
@@ -34,7 +41,8 @@ namespace Game {
             var uiFile = arr[1];
             string path = Application.dataPath + "/UICode/" + uiFile + "/" + realViewName;
             if (Directory.Exists(path)) {
-
+                Debug.Log("[Nick] Find Path" + path);
+                return path;
             }
             else {
                 Debug.LogWarning("[Nick] 请使用UI 代码工具");
