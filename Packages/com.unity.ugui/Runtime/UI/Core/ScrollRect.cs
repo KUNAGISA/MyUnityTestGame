@@ -2,8 +2,7 @@ using System;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
 
-namespace UnityEngine.UI
-{
+namespace UnityEngine.UI {
     [AddComponentMenu("UI/Scroll Rect", 37)]
     [SelectionBase]
     [ExecuteAlways]
@@ -15,8 +14,7 @@ namespace UnityEngine.UI
     /// <remarks>
     /// ScrollRect will not do any clipping on its own. Combined with a Mask component, it can be turned into a scroll view.
     /// </remarks>
-    public class ScrollRect : UIBehaviour, IInitializePotentialDragHandler, IBeginDragHandler, IEndDragHandler, IDragHandler, IScrollHandler, ICanvasElement, ILayoutElement, ILayoutGroup
-    {
+    public class ScrollRect : UIBehaviour, IInitializePotentialDragHandler, IBeginDragHandler, IEndDragHandler, IDragHandler, IScrollHandler, ICanvasElement, ILayoutElement, ILayoutGroup {
         /// <summary>
         /// A setting for which behavior to use when content moves beyond the confines of its container.
         /// </summary>
@@ -50,8 +48,7 @@ namespace UnityEngine.UI
         /// }
         /// </code>
         /// </example>
-        public enum MovementType
-        {
+        public enum MovementType {
             /// <summary>
             /// Unrestricted movement. The content can move forever.
             /// </summary>
@@ -71,8 +68,7 @@ namespace UnityEngine.UI
         /// <summary>
         /// Enum for which behavior to use for scrollbar visibility.
         /// </summary>
-        public enum ScrollbarVisibility
-        {
+        public enum ScrollbarVisibility {
             /// <summary>
             /// Always show the scrollbar.
             /// </summary>
@@ -96,7 +92,7 @@ namespace UnityEngine.UI
         /// <summary>
         /// Event type used by the ScrollRect.
         /// </summary>
-        public class ScrollRectEvent : UnityEvent<Vector2> {}
+        public class ScrollRectEvent : UnityEvent<Vector2> { }
 
         [SerializeField]
         private RectTransform m_Content;
@@ -304,14 +300,11 @@ namespace UnityEngine.UI
         /// }
         /// </code>
         /// </example>
-        public Scrollbar horizontalScrollbar
-        {
-            get
-            {
+        public Scrollbar horizontalScrollbar {
+            get {
                 return m_HorizontalScrollbar;
             }
-            set
-            {
+            set {
                 if (m_HorizontalScrollbar)
                     m_HorizontalScrollbar.onValueChanged.RemoveListener(SetHorizontalNormalizedPosition);
                 m_HorizontalScrollbar = value;
@@ -346,14 +339,11 @@ namespace UnityEngine.UI
         /// }
         /// </code>
         /// </example>
-        public Scrollbar verticalScrollbar
-        {
-            get
-            {
+        public Scrollbar verticalScrollbar {
+            get {
                 return m_VerticalScrollbar;
             }
-            set
-            {
+            set {
                 if (m_VerticalScrollbar)
                     m_VerticalScrollbar.onValueChanged.RemoveListener(SetVerticalNormalizedPosition);
                 m_VerticalScrollbar = value;
@@ -444,10 +434,8 @@ namespace UnityEngine.UI
 
         private RectTransform m_ViewRect;
 
-        protected RectTransform viewRect
-        {
-            get
-            {
+        protected RectTransform viewRect {
+            get {
                 if (m_ViewRect == null)
                     m_ViewRect = m_Viewport;
                 if (m_ViewRect == null)
@@ -484,10 +472,8 @@ namespace UnityEngine.UI
         private float m_VSliderWidth;
 
         [System.NonSerialized] private RectTransform m_Rect;
-        private RectTransform rectTransform
-        {
-            get
-            {
+        private RectTransform rectTransform {
+            get {
                 if (m_Rect == null)
                     m_Rect = GetComponent<RectTransform>();
                 return m_Rect;
@@ -498,26 +484,22 @@ namespace UnityEngine.UI
         private RectTransform m_VerticalScrollbarRect;
 
         // field is never assigned warning
-        #pragma warning disable 649
+#pragma warning disable 649
         private DrivenRectTransformTracker m_Tracker;
-        #pragma warning restore 649
+#pragma warning restore 649
 
-        protected ScrollRect()
-        {}
+        protected ScrollRect() { }
 
         /// <summary>
         /// Rebuilds the scroll rect data after initialization.
         /// </summary>
         /// <param name="executing">The current step in the rendering CanvasUpdate cycle.</param>
-        public virtual void Rebuild(CanvasUpdate executing)
-        {
-            if (executing == CanvasUpdate.Prelayout)
-            {
+        public virtual void Rebuild(CanvasUpdate executing) {
+            if (executing == CanvasUpdate.Prelayout) {
                 UpdateCachedData();
             }
 
-            if (executing == CanvasUpdate.PostLayout)
-            {
+            if (executing == CanvasUpdate.PostLayout) {
                 UpdateBounds();
                 UpdateScrollbars(Vector2.zero);
                 UpdatePrevData();
@@ -526,14 +508,11 @@ namespace UnityEngine.UI
             }
         }
 
-        public virtual void LayoutComplete()
-        {}
+        public virtual void LayoutComplete() { }
 
-        public virtual void GraphicUpdateComplete()
-        {}
+        public virtual void GraphicUpdateComplete() { }
 
-        void UpdateCachedData()
-        {
+        void UpdateCachedData() {
             Transform transform = this.transform;
             m_HorizontalScrollbarRect = m_HorizontalScrollbar == null ? null : m_HorizontalScrollbar.transform as RectTransform;
             m_VerticalScrollbarRect = m_VerticalScrollbar == null ? null : m_VerticalScrollbar.transform as RectTransform;
@@ -550,8 +529,7 @@ namespace UnityEngine.UI
             m_VSliderWidth = (m_VerticalScrollbarRect == null ? 0 : m_VerticalScrollbarRect.rect.width);
         }
 
-        protected override void OnEnable()
-        {
+        protected override void OnEnable() {
             base.OnEnable();
 
             if (m_HorizontalScrollbar)
@@ -563,8 +541,7 @@ namespace UnityEngine.UI
             SetDirty();
         }
 
-        protected override void OnDisable()
-        {
+        protected override void OnDisable() {
             CanvasUpdateRegistry.UnRegisterCanvasElementForRebuild(this);
 
             if (m_HorizontalScrollbar)
@@ -605,13 +582,11 @@ namespace UnityEngine.UI
         /// }
         /// </code>
         /// </example>
-        public override bool IsActive()
-        {
+        public override bool IsActive() {
             return base.IsActive() && m_Content != null;
         }
 
-        private void EnsureLayoutHasRebuilt()
-        {
+        private void EnsureLayoutHasRebuilt() {
             if (!m_HasRebuiltLayout && !CanvasUpdateRegistry.IsRebuildingLayout())
                 Canvas.ForceUpdateCanvases();
         }
@@ -619,13 +594,18 @@ namespace UnityEngine.UI
         /// <summary>
         /// Sets the velocity to zero on both axes so the content stops moving.
         /// </summary>
-        public virtual void StopMovement()
-        {
+        public virtual void StopMovement() {
             m_Velocity = Vector2.zero;
         }
 
-        public virtual void OnScroll(PointerEventData data)
-        {
+        public virtual void OnScroll(PointerEventData data) {
+
+            if (upThrowObj) {
+                if (m_UpThrowEvent) {
+                    ExecuteEvents.Execute(upThrowObj, data, ExecuteEvents.scrollHandler);
+                    return;
+                }
+            }
             if (!IsActive())
                 return;
 
@@ -635,14 +615,12 @@ namespace UnityEngine.UI
             Vector2 delta = data.scrollDelta;
             // Down is positive for scroll events, while in UI system up is positive.
             delta.y *= -1;
-            if (vertical && !horizontal)
-            {
+            if (vertical && !horizontal) {
                 if (Mathf.Abs(delta.x) > Mathf.Abs(delta.y))
                     delta.y = delta.x;
                 delta.x = 0;
             }
-            if (horizontal && !vertical)
-            {
+            if (horizontal && !vertical) {
                 if (Mathf.Abs(delta.y) > Mathf.Abs(delta.x))
                     delta.x = delta.y;
                 delta.y = 0;
@@ -660,13 +638,21 @@ namespace UnityEngine.UI
             UpdateBounds();
         }
 
-        public virtual void OnInitializePotentialDrag(PointerEventData eventData)
-        {
+        public virtual void OnInitializePotentialDrag(PointerEventData eventData) {
             if (eventData.button != PointerEventData.InputButton.Left)
                 return;
 
             m_Velocity = Vector2.zero;
         }
+
+        [SerializeField]
+        private GameObject upThrowObj;
+
+        /// <summary>
+        /// 是否回调给上一级虚拟列表标记
+        /// </summary>
+        [SerializeField]
+        private bool m_UpThrowEvent = false;
 
         /// <summary>
         /// Handling for when the content is beging being dragged.
@@ -687,8 +673,18 @@ namespace UnityEngine.UI
         /// }
         /// </code>
         /// </example>
-        public virtual void OnBeginDrag(PointerEventData eventData)
-        {
+        public virtual void OnBeginDrag(PointerEventData eventData) {
+            if (upThrowObj != null) {
+                var dirtionHorizontal = Mathf.Abs(eventData.delta.x) > Mathf.Abs(eventData.delta.y);
+                m_UpThrowEvent = dirtionHorizontal != horizontal;
+                if (m_UpThrowEvent) {
+                    ExecuteEvents.Execute(upThrowObj, eventData, ExecuteEvents.beginDragHandler);
+                    return;
+                }
+
+            }
+
+
             if (eventData.button != PointerEventData.InputButton.Left)
                 return;
 
@@ -722,8 +718,14 @@ namespace UnityEngine.UI
         /// }
         /// </code>
         /// </example>
-        public virtual void OnEndDrag(PointerEventData eventData)
-        {
+        public virtual void OnEndDrag(PointerEventData eventData) {
+            if (upThrowObj) {
+                if (m_UpThrowEvent) {
+                    ExecuteEvents.Execute(upThrowObj, eventData, ExecuteEvents.endDragHandler);
+                    m_UpThrowEvent = false;
+                    return;
+                }
+            }
             if (eventData.button != PointerEventData.InputButton.Left)
                 return;
 
@@ -749,8 +751,13 @@ namespace UnityEngine.UI
         /// }
         /// </code>
         /// </example>
-        public virtual void OnDrag(PointerEventData eventData)
-        {
+        public virtual void OnDrag(PointerEventData eventData) {
+            if (upThrowObj) {
+                if (m_UpThrowEvent) {
+                    ExecuteEvents.Execute(upThrowObj, eventData, ExecuteEvents.dragHandler);
+                    return;
+                }
+            }
             if (!m_Dragging)
                 return;
 
@@ -772,8 +779,7 @@ namespace UnityEngine.UI
             // Offset to get content into place in the view.
             Vector2 offset = CalculateOffset(position - m_Content.anchoredPosition);
             position += offset;
-            if (m_MovementType == MovementType.Elastic)
-            {
+            if (m_MovementType == MovementType.Elastic) {
                 if (offset.x != 0)
                     position.x = position.x - RubberDelta(offset.x, m_ViewBounds.size.x);
                 if (offset.y != 0)
@@ -786,22 +792,19 @@ namespace UnityEngine.UI
         /// <summary>
         /// Sets the anchored position of the content.
         /// </summary>
-        protected virtual void SetContentAnchoredPosition(Vector2 position)
-        {
+        protected virtual void SetContentAnchoredPosition(Vector2 position) {
             if (!m_Horizontal)
                 position.x = m_Content.anchoredPosition.x;
             if (!m_Vertical)
                 position.y = m_Content.anchoredPosition.y;
 
-            if (position != m_Content.anchoredPosition)
-            {
+            if (position != m_Content.anchoredPosition) {
                 m_Content.anchoredPosition = position;
                 UpdateBounds();
             }
         }
 
-        protected virtual void LateUpdate()
-        {
+        protected virtual void LateUpdate() {
             if (!m_Content)
                 return;
 
@@ -809,14 +812,11 @@ namespace UnityEngine.UI
             UpdateBounds();
             float deltaTime = Time.unscaledDeltaTime;
             Vector2 offset = CalculateOffset(Vector2.zero);
-            if (!m_Dragging && (offset != Vector2.zero || m_Velocity != Vector2.zero))
-            {
+            if (!m_Dragging && (offset != Vector2.zero || m_Velocity != Vector2.zero)) {
                 Vector2 position = m_Content.anchoredPosition;
-                for (int axis = 0; axis < 2; axis++)
-                {
+                for (int axis = 0; axis < 2; axis++) {
                     // Apply spring physics if movement is elastic and content has an offset from the view.
-                    if (m_MovementType == MovementType.Elastic && offset[axis] != 0)
-                    {
+                    if (m_MovementType == MovementType.Elastic && offset[axis] != 0) {
                         float speed = m_Velocity[axis];
                         float smoothTime = m_Elasticity;
                         if (m_Scrolling)
@@ -827,22 +827,19 @@ namespace UnityEngine.UI
                         m_Velocity[axis] = speed;
                     }
                     // Else move content according to velocity with deceleration applied.
-                    else if (m_Inertia)
-                    {
+                    else if (m_Inertia) {
                         m_Velocity[axis] *= Mathf.Pow(m_DecelerationRate, deltaTime);
                         if (Mathf.Abs(m_Velocity[axis]) < 1)
                             m_Velocity[axis] = 0;
                         position[axis] += m_Velocity[axis] * deltaTime;
                     }
                     // If we have neither elaticity or friction, there shouldn't be any velocity.
-                    else
-                    {
+                    else {
                         m_Velocity[axis] = 0;
                     }
                 }
 
-                if (m_MovementType == MovementType.Clamped)
-                {
+                if (m_MovementType == MovementType.Clamped) {
                     offset = CalculateOffset(position - m_Content.anchoredPosition);
                     position += offset;
                 }
@@ -850,14 +847,12 @@ namespace UnityEngine.UI
                 SetContentAnchoredPosition(position);
             }
 
-            if (m_Dragging && m_Inertia)
-            {
+            if (m_Dragging && m_Inertia) {
                 Vector3 newVelocity = (m_Content.anchoredPosition - m_PrevPosition) / deltaTime;
                 m_Velocity = Vector3.Lerp(m_Velocity, newVelocity, deltaTime * 10);
             }
 
-            if (m_ViewBounds != m_PrevViewBounds || m_ContentBounds != m_PrevContentBounds || m_Content.anchoredPosition != m_PrevPosition)
-            {
+            if (m_ViewBounds != m_PrevViewBounds || m_ContentBounds != m_PrevContentBounds || m_Content.anchoredPosition != m_PrevPosition) {
                 UpdateScrollbars(offset);
                 UISystemProfilerApi.AddMarker("ScrollRect.value", this);
                 m_OnValueChanged.Invoke(normalizedPosition);
@@ -870,8 +865,7 @@ namespace UnityEngine.UI
         /// <summary>
         /// Helper function to update the previous data fields on a ScrollRect. Call this before you change data in the ScrollRect.
         /// </summary>
-        protected void UpdatePrevData()
-        {
+        protected void UpdatePrevData() {
             if (m_Content == null)
                 m_PrevPosition = Vector2.zero;
             else
@@ -880,10 +874,8 @@ namespace UnityEngine.UI
             m_PrevContentBounds = m_ContentBounds;
         }
 
-        private void UpdateScrollbars(Vector2 offset)
-        {
-            if (m_HorizontalScrollbar)
-            {
+        private void UpdateScrollbars(Vector2 offset) {
+            if (m_HorizontalScrollbar) {
                 if (m_ContentBounds.size.x > 0)
                     m_HorizontalScrollbar.size = Mathf.Clamp01((m_ViewBounds.size.x - Mathf.Abs(offset.x)) / m_ContentBounds.size.x);
                 else
@@ -892,8 +884,7 @@ namespace UnityEngine.UI
                 m_HorizontalScrollbar.value = horizontalNormalizedPosition;
             }
 
-            if (m_VerticalScrollbar)
-            {
+            if (m_VerticalScrollbar) {
                 if (m_ContentBounds.size.y > 0)
                     m_VerticalScrollbar.size = Mathf.Clamp01((m_ViewBounds.size.y - Mathf.Abs(offset.y)) / m_ContentBounds.size.y);
                 else
@@ -925,14 +916,11 @@ namespace UnityEngine.UI
         /// }
         /// </code>
         /// </example>
-        public Vector2 normalizedPosition
-        {
-            get
-            {
+        public Vector2 normalizedPosition {
+            get {
                 return new Vector2(horizontalNormalizedPosition, verticalNormalizedPosition);
             }
-            set
-            {
+            set {
                 SetNormalizedPosition(value.x, 0);
                 SetNormalizedPosition(value.y, 1);
             }
@@ -960,17 +948,14 @@ namespace UnityEngine.UI
         /// }
         /// </code>
         /// </example>
-        public float horizontalNormalizedPosition
-        {
-            get
-            {
+        public float horizontalNormalizedPosition {
+            get {
                 UpdateBounds();
                 if ((m_ContentBounds.size.x <= m_ViewBounds.size.x) || Mathf.Approximately(m_ContentBounds.size.x, m_ViewBounds.size.x))
                     return (m_ViewBounds.min.x > m_ContentBounds.min.x) ? 1 : 0;
                 return (m_ViewBounds.min.x - m_ContentBounds.min.x) / (m_ContentBounds.size.x - m_ViewBounds.size.x);
             }
-            set
-            {
+            set {
                 SetNormalizedPosition(value, 0);
             }
         }
@@ -998,18 +983,15 @@ namespace UnityEngine.UI
         /// </code>
         /// </example>
 
-        public float verticalNormalizedPosition
-        {
-            get
-            {
+        public float verticalNormalizedPosition {
+            get {
                 UpdateBounds();
                 if ((m_ContentBounds.size.y <= m_ViewBounds.size.y) || Mathf.Approximately(m_ContentBounds.size.y, m_ViewBounds.size.y))
                     return (m_ViewBounds.min.y > m_ContentBounds.min.y) ? 1 : 0;
 
                 return (m_ViewBounds.min.y - m_ContentBounds.min.y) / (m_ContentBounds.size.y - m_ViewBounds.size.y);
             }
-            set
-            {
+            set {
                 SetNormalizedPosition(value, 1);
             }
         }
@@ -1022,8 +1004,7 @@ namespace UnityEngine.UI
         /// </summary>
         /// <param name="value">The position to set, between 0 and 1.</param>
         /// <param name="axis">The axis to set: 0 for horizontal, 1 for vertical.</param>
-        protected virtual void SetNormalizedPosition(float value, int axis)
-        {
+        protected virtual void SetNormalizedPosition(float value, int axis) {
             EnsureLayoutHasRebuilt();
             UpdateBounds();
             // How much the content is larger than the view.
@@ -1034,8 +1015,7 @@ namespace UnityEngine.UI
             float newAnchoredPosition = m_Content.anchoredPosition[axis] + contentBoundsMinPosition - m_ContentBounds.min[axis];
 
             Vector3 anchoredPosition = m_Content.anchoredPosition;
-            if (Mathf.Abs(anchoredPosition[axis] - newAnchoredPosition) > 0.01f)
-            {
+            if (Mathf.Abs(anchoredPosition[axis] - newAnchoredPosition) > 0.01f) {
                 anchoredPosition[axis] = newAnchoredPosition;
                 m_Content.anchoredPosition = anchoredPosition;
                 m_Velocity[axis] = 0;
@@ -1043,29 +1023,23 @@ namespace UnityEngine.UI
             }
         }
 
-        private static float RubberDelta(float overStretching, float viewSize)
-        {
+        private static float RubberDelta(float overStretching, float viewSize) {
             return (1 - (1 / ((Mathf.Abs(overStretching) * 0.55f / viewSize) + 1))) * viewSize * Mathf.Sign(overStretching);
         }
 
-        protected override void OnRectTransformDimensionsChange()
-        {
+        protected override void OnRectTransformDimensionsChange() {
             SetDirty();
         }
 
-        private bool hScrollingNeeded
-        {
-            get
-            {
+        private bool hScrollingNeeded {
+            get {
                 if (Application.isPlaying)
                     return m_ContentBounds.size.x > m_ViewBounds.size.x + 0.01f;
                 return true;
             }
         }
-        private bool vScrollingNeeded
-        {
-            get
-            {
+        private bool vScrollingNeeded {
+            get {
                 if (Application.isPlaying)
                     return m_ContentBounds.size.y > m_ViewBounds.size.y + 0.01f;
                 return true;
@@ -1075,12 +1049,12 @@ namespace UnityEngine.UI
         /// <summary>
         /// Called by the layout system.
         /// </summary>
-        public virtual void CalculateLayoutInputHorizontal() {}
+        public virtual void CalculateLayoutInputHorizontal() { }
 
         /// <summary>
         /// Called by the layout system.
         /// </summary>
-        public virtual void CalculateLayoutInputVertical() {}
+        public virtual void CalculateLayoutInputVertical() { }
 
         /// <summary>
         /// Called by the layout system.
@@ -1116,13 +1090,11 @@ namespace UnityEngine.UI
         /// <summary>
         /// Called by the layout system.
         /// </summary>
-        public virtual void SetLayoutHorizontal()
-        {
+        public virtual void SetLayoutHorizontal() {
             m_Tracker.Clear();
             UpdateCachedData();
 
-            if (m_HSliderExpand || m_VSliderExpand)
-            {
+            if (m_HSliderExpand || m_VSliderExpand) {
                 m_Tracker.Add(this, viewRect,
                     DrivenTransformProperties.Anchors |
                     DrivenTransformProperties.SizeDelta |
@@ -1141,8 +1113,7 @@ namespace UnityEngine.UI
             }
 
             // If it doesn't fit vertically, enable vertical scrollbar and shrink view horizontally to make room for it.
-            if (m_VSliderExpand && vScrollingNeeded)
-            {
+            if (m_VSliderExpand && vScrollingNeeded) {
                 viewRect.sizeDelta = new Vector2(-(m_VSliderWidth + m_VerticalScrollbarSpacing), viewRect.sizeDelta.y);
 
                 // Recalculate content layout with this size to see if it fits vertically
@@ -1153,8 +1124,7 @@ namespace UnityEngine.UI
             }
 
             // If it doesn't fit horizontally, enable horizontal scrollbar and shrink view vertically to make room for it.
-            if (m_HSliderExpand && hScrollingNeeded)
-            {
+            if (m_HSliderExpand && hScrollingNeeded) {
                 viewRect.sizeDelta = new Vector2(viewRect.sizeDelta.x, -(m_HSliderHeight + m_HorizontalScrollbarSpacing));
                 m_ViewBounds = new Bounds(viewRect.rect.center, viewRect.rect.size);
                 m_ContentBounds = GetBounds();
@@ -1163,8 +1133,7 @@ namespace UnityEngine.UI
             // If the vertical slider didn't kick in the first time, and the horizontal one did,
             // we need to check again if the vertical slider now needs to kick in.
             // If it doesn't fit vertically, enable vertical scrollbar and shrink view horizontally to make room for it.
-            if (m_VSliderExpand && vScrollingNeeded && viewRect.sizeDelta.x == 0 && viewRect.sizeDelta.y < 0)
-            {
+            if (m_VSliderExpand && vScrollingNeeded && viewRect.sizeDelta.x == 0 && viewRect.sizeDelta.y < 0) {
                 viewRect.sizeDelta = new Vector2(-(m_VSliderWidth + m_VerticalScrollbarSpacing), viewRect.sizeDelta.y);
             }
         }
@@ -1172,40 +1141,32 @@ namespace UnityEngine.UI
         /// <summary>
         /// Called by the layout system.
         /// </summary>
-        public virtual void SetLayoutVertical()
-        {
+        public virtual void SetLayoutVertical() {
             UpdateScrollbarLayout();
             m_ViewBounds = new Bounds(viewRect.rect.center, viewRect.rect.size);
             m_ContentBounds = GetBounds();
         }
 
-        void UpdateScrollbarVisibility()
-        {
+        void UpdateScrollbarVisibility() {
             UpdateOneScrollbarVisibility(vScrollingNeeded, m_Vertical, m_VerticalScrollbarVisibility, m_VerticalScrollbar);
             UpdateOneScrollbarVisibility(hScrollingNeeded, m_Horizontal, m_HorizontalScrollbarVisibility, m_HorizontalScrollbar);
         }
 
-        private static void UpdateOneScrollbarVisibility(bool xScrollingNeeded, bool xAxisEnabled, ScrollbarVisibility scrollbarVisibility, Scrollbar scrollbar)
-        {
-            if (scrollbar)
-            {
-                if (scrollbarVisibility == ScrollbarVisibility.Permanent)
-                {
+        private static void UpdateOneScrollbarVisibility(bool xScrollingNeeded, bool xAxisEnabled, ScrollbarVisibility scrollbarVisibility, Scrollbar scrollbar) {
+            if (scrollbar) {
+                if (scrollbarVisibility == ScrollbarVisibility.Permanent) {
                     if (scrollbar.gameObject.activeSelf != xAxisEnabled)
                         scrollbar.gameObject.SetActive(xAxisEnabled);
                 }
-                else
-                {
+                else {
                     if (scrollbar.gameObject.activeSelf != xScrollingNeeded)
                         scrollbar.gameObject.SetActive(xScrollingNeeded);
                 }
             }
         }
 
-        void UpdateScrollbarLayout()
-        {
-            if (m_VSliderExpand && m_HorizontalScrollbar)
-            {
+        void UpdateScrollbarLayout() {
+            if (m_VSliderExpand && m_HorizontalScrollbar) {
                 m_Tracker.Add(this, m_HorizontalScrollbarRect,
                     DrivenTransformProperties.AnchorMinX |
                     DrivenTransformProperties.AnchorMaxX |
@@ -1220,8 +1181,7 @@ namespace UnityEngine.UI
                     m_HorizontalScrollbarRect.sizeDelta = new Vector2(0, m_HorizontalScrollbarRect.sizeDelta.y);
             }
 
-            if (m_HSliderExpand && m_VerticalScrollbar)
-            {
+            if (m_HSliderExpand && m_VerticalScrollbar) {
                 m_Tracker.Add(this, m_VerticalScrollbarRect,
                     DrivenTransformProperties.AnchorMinY |
                     DrivenTransformProperties.AnchorMaxY |
@@ -1240,8 +1200,7 @@ namespace UnityEngine.UI
         /// <summary>
         /// Calculate the bounds the ScrollRect should be using.
         /// </summary>
-        protected void UpdateBounds()
-        {
+        protected void UpdateBounds() {
             m_ViewBounds = new Bounds(viewRect.rect.center, viewRect.rect.size);
             m_ContentBounds = GetBounds();
 
@@ -1255,32 +1214,26 @@ namespace UnityEngine.UI
             m_ContentBounds.size = contentSize;
             m_ContentBounds.center = contentPos;
 
-            if (movementType == MovementType.Clamped)
-            {
+            if (movementType == MovementType.Clamped) {
                 // Adjust content so that content bounds bottom (right side) is never higher (to the left) than the view bounds bottom (right side).
                 // top (left side) is never lower (to the right) than the view bounds top (left side).
                 // All this can happen if content has shrunk.
                 // This works because content size is at least as big as view size (because of the call to InternalUpdateBounds above).
                 Vector2 delta = Vector2.zero;
-                if (m_ViewBounds.max.x > m_ContentBounds.max.x)
-                {
+                if (m_ViewBounds.max.x > m_ContentBounds.max.x) {
                     delta.x = Math.Min(m_ViewBounds.min.x - m_ContentBounds.min.x, m_ViewBounds.max.x - m_ContentBounds.max.x);
                 }
-                else if (m_ViewBounds.min.x < m_ContentBounds.min.x)
-                {
+                else if (m_ViewBounds.min.x < m_ContentBounds.min.x) {
                     delta.x = Math.Max(m_ViewBounds.min.x - m_ContentBounds.min.x, m_ViewBounds.max.x - m_ContentBounds.max.x);
                 }
 
-                if (m_ViewBounds.min.y < m_ContentBounds.min.y)
-                {
+                if (m_ViewBounds.min.y < m_ContentBounds.min.y) {
                     delta.y = Math.Max(m_ViewBounds.min.y - m_ContentBounds.min.y, m_ViewBounds.max.y - m_ContentBounds.max.y);
                 }
-                else if (m_ViewBounds.max.y > m_ContentBounds.max.y)
-                {
+                else if (m_ViewBounds.max.y > m_ContentBounds.max.y) {
                     delta.y = Math.Min(m_ViewBounds.min.y - m_ContentBounds.min.y, m_ViewBounds.max.y - m_ContentBounds.max.y);
                 }
-                if (delta.sqrMagnitude > float.Epsilon)
-                {
+                if (delta.sqrMagnitude > float.Epsilon) {
                     contentPos = m_Content.anchoredPosition + delta;
                     if (!m_Horizontal)
                         contentPos.x = m_Content.anchoredPosition.x;
@@ -1291,8 +1244,7 @@ namespace UnityEngine.UI
             }
         }
 
-        internal static void AdjustBounds(ref Bounds viewBounds, ref Vector2 contentPivot, ref Vector3 contentSize, ref Vector3 contentPos)
-        {
+        internal static void AdjustBounds(ref Bounds viewBounds, ref Vector2 contentPivot, ref Vector3 contentSize, ref Vector3 contentPos) {
             // Make sure content bounds are at least as large as view by adding padding if not.
             // One might think at first that if the content is smaller than the view, scrolling should be allowed.
             // However, that's not how scroll views normally work.
@@ -1301,21 +1253,18 @@ namespace UnityEngine.UI
             // E.g. if pivot is at top, bounds are expanded downwards.
             // This also works nicely when ContentSizeFitter is used on the content.
             Vector3 excess = viewBounds.size - contentSize;
-            if (excess.x > 0)
-            {
+            if (excess.x > 0) {
                 contentPos.x -= excess.x * (contentPivot.x - 0.5f);
                 contentSize.x = viewBounds.size.x;
             }
-            if (excess.y > 0)
-            {
+            if (excess.y > 0) {
                 contentPos.y -= excess.y * (contentPivot.y - 0.5f);
                 contentSize.y = viewBounds.size.y;
             }
         }
 
         private readonly Vector3[] m_Corners = new Vector3[4];
-        private Bounds GetBounds()
-        {
+        private Bounds GetBounds() {
             if (m_Content == null)
                 return new Bounds();
             m_Content.GetWorldCorners(m_Corners);
@@ -1323,13 +1272,11 @@ namespace UnityEngine.UI
             return InternalGetBounds(m_Corners, ref viewWorldToLocalMatrix);
         }
 
-        internal static Bounds InternalGetBounds(Vector3[] corners, ref Matrix4x4 viewWorldToLocalMatrix)
-        {
+        internal static Bounds InternalGetBounds(Vector3[] corners, ref Matrix4x4 viewWorldToLocalMatrix) {
             var vMin = new Vector3(float.MaxValue, float.MaxValue, float.MaxValue);
             var vMax = new Vector3(float.MinValue, float.MinValue, float.MinValue);
 
-            for (int j = 0; j < 4; j++)
-            {
+            for (int j = 0; j < 4; j++) {
                 Vector3 v = viewWorldToLocalMatrix.MultiplyPoint3x4(corners[j]);
                 vMin = Vector3.Min(v, vMin);
                 vMax = Vector3.Max(v, vMax);
@@ -1340,13 +1287,11 @@ namespace UnityEngine.UI
             return bounds;
         }
 
-        private Vector2 CalculateOffset(Vector2 delta)
-        {
+        private Vector2 CalculateOffset(Vector2 delta) {
             return InternalCalculateOffset(ref m_ViewBounds, ref m_ContentBounds, m_Horizontal, m_Vertical, m_MovementType, ref delta);
         }
 
-        internal static Vector2 InternalCalculateOffset(ref Bounds viewBounds, ref Bounds contentBounds, bool horizontal, bool vertical, MovementType movementType, ref Vector2 delta)
-        {
+        internal static Vector2 InternalCalculateOffset(ref Bounds viewBounds, ref Bounds contentBounds, bool horizontal, bool vertical, MovementType movementType, ref Vector2 delta) {
             Vector2 offset = Vector2.zero;
             if (movementType == MovementType.Unrestricted)
                 return offset;
@@ -1356,8 +1301,7 @@ namespace UnityEngine.UI
 
             // min/max offset extracted to check if approximately 0 and avoid recalculating layout every frame (case 1010178)
 
-            if (horizontal)
-            {
+            if (horizontal) {
                 min.x += delta.x;
                 max.x += delta.x;
 
@@ -1370,8 +1314,7 @@ namespace UnityEngine.UI
                     offset.x = maxOffset;
             }
 
-            if (vertical)
-            {
+            if (vertical) {
                 min.y += delta.y;
                 max.y += delta.y;
 
@@ -1390,8 +1333,7 @@ namespace UnityEngine.UI
         /// <summary>
         /// Override to alter or add to the code that keeps the appearance of the scroll rect synced with its data.
         /// </summary>
-        protected void SetDirty()
-        {
+        protected void SetDirty() {
             if (!IsActive())
                 return;
 
@@ -1401,8 +1343,7 @@ namespace UnityEngine.UI
         /// <summary>
         /// Override to alter or add to the code that caches data to avoid repeated heavy operations.
         /// </summary>
-        protected void SetDirtyCaching()
-        {
+        protected void SetDirtyCaching() {
             if (!IsActive())
                 return;
 
@@ -1412,12 +1353,11 @@ namespace UnityEngine.UI
             m_ViewRect = null;
         }
 
-        #if UNITY_EDITOR
-        protected override void OnValidate()
-        {
+#if UNITY_EDITOR
+        protected override void OnValidate() {
             SetDirtyCaching();
         }
 
-        #endif
+#endif
     }
 }

@@ -28,6 +28,7 @@ namespace UnityEditor.UI
         SerializedProperty m_HorizontalScrollbarSpacing;
         SerializedProperty m_VerticalScrollbarSpacing;
         SerializedProperty m_OnValueChanged;
+        SerializedProperty upThrowObj;
         AnimBool m_ShowElasticity;
         AnimBool m_ShowDecelerationRate;
         bool m_ViewportIsNotChild, m_HScrollbarIsNotChild, m_VScrollbarIsNotChild;
@@ -52,7 +53,7 @@ namespace UnityEditor.UI
             m_HorizontalScrollbarSpacing    = serializedObject.FindProperty("m_HorizontalScrollbarSpacing");
             m_VerticalScrollbarSpacing      = serializedObject.FindProperty("m_VerticalScrollbarSpacing");
             m_OnValueChanged        = serializedObject.FindProperty("m_OnValueChanged");
-
+            upThrowObj              = serializedObject.FindProperty("upThrowObj");
             m_ShowElasticity = new AnimBool(Repaint);
             m_ShowDecelerationRate = new AnimBool(Repaint);
             SetAnimBools(true);
@@ -104,7 +105,7 @@ namespace UnityEditor.UI
             CalculateCachedValues();
 
             EditorGUILayout.PropertyField(m_Content);
-
+            EditorGUILayout.PropertyField(upThrowObj);
             EditorGUILayout.PropertyField(m_Horizontal);
             EditorGUILayout.PropertyField(m_Vertical);
 
