@@ -5,7 +5,7 @@ namespace Game.View {
 
 
         private TestUI m_ui;
-        private void Start() {
+        private void Awake() {
             m_ui = new TestUI(transform);
 
         }
