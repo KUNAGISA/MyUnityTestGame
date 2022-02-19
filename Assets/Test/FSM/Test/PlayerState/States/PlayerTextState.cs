@@ -7,9 +7,6 @@ namespace FSM.Test
         protected override void OnEnterState()
         {
             base.OnEnterState();
-
-            var animator = entity.GetComponent<Animator>();
-            animator.Play("PlayerTextAnim");
         }
 
         protected override ITransition<Player> OnTickState()
