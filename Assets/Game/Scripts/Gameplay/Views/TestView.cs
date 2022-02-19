@@ -8,6 +8,11 @@ namespace Game.View {
         private void Awake() {
             m_ui = new TestUI(transform);
 
+            
+
+
+
+
         }
 
     }

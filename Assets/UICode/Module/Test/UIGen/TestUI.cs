@@ -18,6 +18,7 @@ namespace AutoGenerateUI.Test {
         public RectTransform Panel  { get; private set; }
         public ButtonCell TestBtn  { get; private set; }
         public RawImage TestRawImg  { get; private set; }
+        public ScrollCell Scroll  { get; private set; }
 
         public void Init(Transform inst) {
             
@@ -39,6 +40,12 @@ namespace AutoGenerateUI.Test {
             } else {
                 Debug.LogError("TestRawImg Can't Find Under PanelXform");
             }
+            Transform ScrollXform = PanelXform.Find("Scroll");
+            if ( ScrollXform != null) {
+                Scroll = new ScrollCell(ScrollXform);
+            } else {
+                Debug.LogError("Scroll Can't Find Under PanelXform");
+            }
         }
 
         public void Free() {
@@ -49,6 +56,10 @@ namespace AutoGenerateUI.Test {
             }
             TestBtn = null;
             TestRawImg = null;
+            if (Scroll != null) {
+                Scroll.Free();
+            }
+            Scroll = null;
         }
     }
 }
