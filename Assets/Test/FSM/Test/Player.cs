@@ -1,15 +1,22 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace FSM.Test
 {
+    public struct TestMsg
+    {
+
+    }
 
     public class Player : MonoBehaviour
     {
         public int face = 1;
 
         public float speed = 1.0f;
+
+        public bool IsInBattle = false;
 
         [SerializeField]
         private float m_WaitEndTime = 0.0f;
@@ -33,6 +40,11 @@ namespace FSM.Test
         public void SetAnimatorBool(string tag, bool isTag)
         {
             GetComponent<Animator>()?.SetBool(tag, isTag);
+        }
+
+        public void OnInput()
+        {
+            m_StateMachine.SendMessage(new TestMsg());
         }
     }
 }

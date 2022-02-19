@@ -14,10 +14,7 @@ namespace FSM.Test
 
         protected override ITransition<Player> OnTickState()
         {
-            var animator = entity.GetComponent<Animator>();
-            var animStateInfo = animator.GetCurrentAnimatorStateInfo(0);
-
-            if (!animStateInfo.IsName("PlayerTextAnim"))
+            if (!entity.IsInBattle)
             {
                 return new PlayerTextAnimFinish();
             }

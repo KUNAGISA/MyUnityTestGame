@@ -2,8 +2,18 @@ using UnityEngine;
 
 namespace FSM.Test
 {
-    public class PlayerIdleState : PlayerBaseState
+    public class PlayerIdleState : PlayerBaseState, IPlayerReceive<TestMsg>
     {
+        public ITransition<Player> ReceiveMsg(in TestMsg message)
+        {
+            var animator = entity.GetComponent<Animator>();
+            animator.Play("PlayerTextAnim");
+
+            if (entity.IsInBattle)
+                return new PlayerIdleFinish();
+            return null;
+        }
+
         protected override void OnEnterState()
         {
             base.OnEnterState();
@@ -22,10 +32,8 @@ namespace FSM.Test
         {
             entity.WaitEndTime = entity.WaitEndTime - Time.deltaTime;
 
-            if (entity.WaitEndTime <= 0.0f)
-            {
+            if (entity.IsInBattle)
                 return new PlayerIdleFinish();
-            }
 
             return base.OnTickState();
         }

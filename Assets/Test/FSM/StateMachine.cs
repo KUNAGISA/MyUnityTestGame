@@ -30,7 +30,8 @@ namespace FSM
 
         public void SendMessage<TMessage>(in TMessage message)
         {
-            (m_CurrState as IReceiveMsg<TMessage, Entity>)?.ReceiveMsg(in message);
+            var receive = m_CurrState as IReceiveMsg<TMessage, Entity>;
+            receive?.ReceiveMsg(in message)?.Execute(m_Entity, this);
         }
 
         public void TickStateMachine()
@@ -40,12 +41,16 @@ namespace FSM
 
         public void ChangeState<State>() where State : IState<Entity>
         {
-            if (m_States.TryGetValue(typeof(State), out var state))
+            Debug.Log("转换状态");
+            if (!m_States.TryGetValue(typeof(State), out var state))
             {
-                m_CurrState?.ExitState();
-                m_CurrState = state;
-                m_CurrState.EnterState();
+                Debug.LogWarning("找不到切换的状态" + typeof(State));
+                return;
             }
+
+            m_CurrState?.ExitState();
+            m_CurrState = state;
+            m_CurrState.EnterState();
         }
     }
 }
