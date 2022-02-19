@@ -1,7 +1,17 @@
 ﻿namespace FSM
 {
-    public interface IReceiveMsg<TMessage, in Entity, ETransition>
+    /// <summary>
+    /// 接收信息接口
+    /// </summary>
+    /// <typeparam name="TMessage">信息类</typeparam>
+    /// <typeparam name="Entity">实体类</typeparam>
+    public interface IReceiveMsg<TMessage, in Entity>
     {
-        public void ReceiveMsg(Entity entity, ITransition<ETransition> transition, in TMessage message);
+        /// <summary>
+        /// 接收信息
+        /// </summary>
+        /// <param name="message">信息</param>
+        /// <returns>转换状态</returns>
+        public ITransition<Entity> ReceiveMsg(in TMessage message);
     }
 }

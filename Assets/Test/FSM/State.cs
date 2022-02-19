@@ -1,75 +1,69 @@
-﻿using System;
-
-namespace FSM
+﻿namespace FSM
 {
-    /// <summary>
-    /// 可转换状态接口
-    /// </summary>
-    /// <typeparam name="ETransition">转换条件</typeparam>
-    public interface ITransition<ETransition>
-    {
-        /// <summary>
-        /// 转换状态
-        /// </summary>
-        /// <param name="transition">转换条件</param>
-        void TransState(ETransition transition);
-    }
-
     /// <summary>
     /// 状态接口
     /// </summary>
     /// <typeparam name="Entity">操作的实体类</typeparam>
-    /// <typeparam name="ETransition">转换状态条件</typeparam>
-    public interface IState<in Entity, ETransition>
+    public interface IState<in Entity>
     {
+        /// <summary>
+        /// 初始化状态
+        /// </summary>
+        /// <param name="entity">操作的实体</param>
+        void InitState(Entity entity);
+
         /// <summary>
         /// 进入状态
         /// </summary>
-        /// <param name="entity">实体</param>
-        /// <param name="transition">状态切换</param>
-        void EnterState(Entity entity, ITransition<ETransition> transition);
+        void EnterState();
 
         /// <summary>
         /// 离开状态
         /// </summary>
-        /// <param name="entity">实体</param>
-        /// <param name="transition">状态切换</param>
-        void ExitState(Entity entity, ITransition<ETransition> transition);
+        void ExitState();
 
         /// <summary>
-        /// 帧更新状态
+        /// 状态定时器
         /// </summary>
-        /// <param name="entity">实体</param>
-        /// <param name="transition">状态切换</param>
-        void TickState(Entity entity, ITransition<ETransition> transition);
+        ITransition<Entity> TickState();
     }
 
-    /// <summary>
-    /// 状态基类
-    /// </summary>
-    /// <typeparam name="Entity"></typeparam>
-    /// <typeparam name="ETransition"></typeparam>
-    public class BaseState<Entity, ETransition> : IState<Entity, ETransition>
+    public abstract class BaseState<Entity> : IState<Entity>
     {
-        void IState<Entity, ETransition>.EnterState(Entity entity, ITransition<ETransition> transition)
+        private Entity m_Entity;
+        protected Entity entity => m_Entity;
+
+        void IState<Entity>.InitState(Entity entity)
         {
-            OnEnterState(entity, transition);
+            m_Entity = entity;
+            OnInitState();
         }
 
-        void IState<Entity, ETransition>.ExitState(Entity entity, ITransition<ETransition> transition)
-        {
-            OnExitState(entity, transition);
-        }
+        void IState<Entity>.EnterState() => OnEnterState();
 
-        void IState<Entity, ETransition>.TickState(Entity entity, ITransition<ETransition> transition)
-        {
-            OnTickState(entity, transition);
-        }
+        void IState<Entity>.ExitState() => OnExitState();
 
-        protected virtual void OnEnterState(Entity entity, ITransition<ETransition> transition) { }
+        ITransition<Entity> IState<Entity>.TickState() => OnTickState();
 
-        protected virtual void OnExitState(Entity entity, ITransition<ETransition> transition) { }
+        /// <summary>
+        /// 状态初始化时回调
+        /// </summary>
+        protected virtual void OnInitState() { }
 
-        protected virtual void OnTickState(Entity entity, ITransition<ETransition> transition) { }
+        /// <summary>
+        /// 进入状态时回调
+        /// </summary>
+        protected virtual void OnEnterState() { }
+
+        /// <summary>
+        /// 离开状态时回调
+        /// </summary>
+        protected virtual void OnExitState() { }
+
+        /// <summary>
+        /// 状态定时器回调
+        /// </summary>
+        /// <returns></returns>
+        protected virtual ITransition<Entity> OnTickState() => null;
     }
 }

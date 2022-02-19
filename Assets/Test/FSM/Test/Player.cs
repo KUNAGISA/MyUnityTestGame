@@ -5,7 +5,7 @@ using UnityEngine;
 namespace FSM.Test
 {
 
-    public class Player : MonoBehaviour, IEntity
+    public class Player : MonoBehaviour
     {
         public int face = 1;
 
@@ -15,18 +15,14 @@ namespace FSM.Test
         private float m_WaitEndTime = 0.0f;
         public float WaitEndTime { get => m_WaitEndTime; set => m_WaitEndTime = value; }
 
-        private IStateMachine<Player, EntityStateTransition> m_StateMachine = null;
+        private StateMachine<Player> m_StateMachine = null;
 
         private void Awake()
         {
-            m_StateMachine = new StateMachine<Player, EntityStateTransition>();
-
-            m_StateMachine.RegisterState(new EntityIdleState(), EntityStateTransition.MoveFinish);
-            m_StateMachine.RegisterState(new PlayerMoveState(), EntityStateTransition.WaitFinish);
-
-            m_StateMachine.InitStateMachine(this, typeof(EntityIdleState));
-
-            m_StateMachine.SendMessage(new StateMsg());
+            m_StateMachine = new StateMachine<Player>(this);
+            m_StateMachine.RegisterState(new PlayerIdleState());
+            m_StateMachine.RegisterState(new PlayerTextState());
+            m_StateMachine.ChangeState<PlayerIdleState>();
         }
 
         private void Update()
