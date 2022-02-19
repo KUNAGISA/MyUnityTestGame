@@ -303,7 +303,7 @@ namespace AutoGenerateUI@SubSpace {
         else if (xform.GetComponent<Image>()) {
             typeName = typeof(Image).Name;
         }
-        else if (xform.GetComponent<Text>()) {
+        else if (xform.GetComponent<TextExtra>()) {
             //typeName = typeof(Text).Name;
             typeName = "Text";
         }
