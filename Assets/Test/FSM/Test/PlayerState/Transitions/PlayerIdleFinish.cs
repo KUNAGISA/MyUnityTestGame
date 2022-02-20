@@ -9,6 +9,7 @@ namespace FSM.Test
         public void Execute(Player entity, IChangeState<Player> transition)
         {
             transition.ChangeState<PlayerTextState>();
+
         }
     }
 }

@@ -40,6 +40,7 @@ namespace FSM.Test
         public void SetAnimatorBool(string tag, bool isTag)
         {
             GetComponent<Animator>()?.SetBool(tag, isTag);
+            GetComponent<Animator>()?.Update(0);
         }
 
         public void OnInput()

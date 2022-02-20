@@ -6,12 +6,7 @@ namespace FSM.Test
     {
         public ITransition<Player> ReceiveMsg(in TestMsg message)
         {
-            var animator = entity.GetComponent<Animator>();
-            animator.Play("PlayerTextAnim");
-
-            if (entity.IsInBattle)
-                return new PlayerIdleFinish();
-            return null;
+            return new PlayerIdleFinish();
         }
 
         protected override void OnEnterState()
