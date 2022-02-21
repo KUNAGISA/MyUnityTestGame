@@ -55,7 +55,7 @@ namespace UnityEditor.UI {
 
 
         public static GameObject CreateScrollViewExtra(DefaultControls.Resources resources) {
-            GameObject root = CreateUIElementRoot("Scroll View", new Vector2(200, 200), typeof(Image), typeof(ScrollRectEtra));
+            GameObject root = CreateUIElementRoot("Scroll View", new Vector2(200, 200), typeof(Image), typeof(ScrollRectExtra));
 
             GameObject viewport = CreateUIObject("Viewport", root, typeof(Image), typeof(Mask));
             GameObject content = CreateUIObject("Content", viewport, typeof(RectTransform));
@@ -100,7 +100,7 @@ namespace UnityEditor.UI {
 
             // Setup UI components.
 
-            ScrollRect scrollRect = root.GetComponent<ScrollRectEtra>();
+            ScrollRect scrollRect = root.GetComponent<ScrollRectExtra>();
             scrollRect.content = contentRT;
             scrollRect.viewport = viewportRT;
             scrollRect.horizontalScrollbar = hScrollbar.GetComponent<Scrollbar>();

@@ -279,8 +279,8 @@ namespace AutoGenerateUI@SubSpace {
         else if (xform.GetComponent<Scrollbar>()) {
             typeName = typeof(Scrollbar).Name;
         }
-        else if (xform.GetComponent<ScrollRectEtra>()) {
-            typeName = typeof(ScrollRectEtra).Name;
+        else if (xform.GetComponent<ScrollRectExtra>()) {
+            typeName = typeof(ScrollRectExtra).Name;
         }
         else if (xform.GetComponent<Dropdown>()) {
             typeName = typeof(Dropdown).Name;

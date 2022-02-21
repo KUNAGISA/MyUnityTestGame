@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 
 namespace UnityEngine.UI {
-    public sealed class ScrollRectEtra : ScrollRect {
+    public sealed class ScrollRectExtra : ScrollRect {
 
         public GameObject upthrowGo;
 
@@ -14,6 +14,7 @@ namespace UnityEngine.UI {
         public override void OnBeginDrag(PointerEventData eventData) {
 
             if (upthrowGo) {
+
                 var dragHorizontal = Mathf.Abs(eventData.delta.x) > Mathf.Abs(eventData.delta.y);
                 m_UpthrowEvent = dragHorizontal != horizontal;
                 if (m_UpthrowEvent) {
