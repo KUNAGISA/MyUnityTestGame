@@ -18,13 +18,13 @@ namespace AutoGenerateUI.Test {
         public RectTransform Panel  { get; private set; }
         public ButtonCell TestBtn  { get; private set; }
         public RawImage TestRawImg  { get; private set; }
-        public ScrollRectExtra Scroll  { get; private set; }
+        public ScrollCell Scroll  { get; private set; }
         public RectTransform Viewport  { get; private set; }
         public RectTransform Content  { get; private set; }
-        public ScrollRectExtra ChildScroll1  { get; private set; }
-        public ScrollRectExtra ChildScroll2  { get; private set; }
-        public ScrollRectExtra ChildScroll3  { get; private set; }
-        public ScrollRectExtra ChildScroll4  { get; private set; }
+        public ScrollCell ChildScroll1  { get; private set; }
+        public ScrollCell ChildScroll2  { get; private set; }
+        public ScrollCell ChildScroll3  { get; private set; }
+        public ScrollCell ChildScroll4  { get; private set; }
 
         public void Init(Transform inst) {
             
@@ -48,7 +48,7 @@ namespace AutoGenerateUI.Test {
             }
             Transform ScrollXform = PanelXform.Find("Scroll");
             if ( ScrollXform != null) {
-                Scroll = ScrollXform.GetComponent<ScrollRectExtra>();
+                Scroll = new ScrollCell(ScrollXform);
             } else {
                 Debug.LogError("Scroll Can't Find Under PanelXform");
             }
@@ -66,25 +66,25 @@ namespace AutoGenerateUI.Test {
             }
             Transform ChildScroll1Xform = ContentXform.Find("ChildScroll1");
             if ( ChildScroll1Xform != null) {
-                ChildScroll1 = ChildScroll1Xform.GetComponent<ScrollRectExtra>();
+                ChildScroll1 = new ScrollCell(ChildScroll1Xform);
             } else {
                 Debug.LogError("ChildScroll1 Can't Find Under ContentXform");
             }
             Transform ChildScroll2Xform = ContentXform.Find("ChildScroll2");
             if ( ChildScroll2Xform != null) {
-                ChildScroll2 = ChildScroll2Xform.GetComponent<ScrollRectExtra>();
+                ChildScroll2 = new ScrollCell(ChildScroll2Xform);
             } else {
                 Debug.LogError("ChildScroll2 Can't Find Under ContentXform");
             }
             Transform ChildScroll3Xform = ContentXform.Find("ChildScroll3");
             if ( ChildScroll3Xform != null) {
-                ChildScroll3 = ChildScroll3Xform.GetComponent<ScrollRectExtra>();
+                ChildScroll3 = new ScrollCell(ChildScroll3Xform);
             } else {
                 Debug.LogError("ChildScroll3 Can't Find Under ContentXform");
             }
             Transform ChildScroll4Xform = ContentXform.Find("ChildScroll4");
             if ( ChildScroll4Xform != null) {
-                ChildScroll4 = ChildScroll4Xform.GetComponent<ScrollRectExtra>();
+                ChildScroll4 = new ScrollCell(ChildScroll4Xform);
             } else {
                 Debug.LogError("ChildScroll4 Can't Find Under ContentXform");
             }
@@ -98,12 +98,27 @@ namespace AutoGenerateUI.Test {
             }
             TestBtn = null;
             TestRawImg = null;
+            if (Scroll != null) {
+                Scroll.Free();
+            }
             Scroll = null;
             Viewport = null;
             Content = null;
+            if (ChildScroll1 != null) {
+                ChildScroll1.Free();
+            }
             ChildScroll1 = null;
+            if (ChildScroll2 != null) {
+                ChildScroll2.Free();
+            }
             ChildScroll2 = null;
+            if (ChildScroll3 != null) {
+                ChildScroll3.Free();
+            }
             ChildScroll3 = null;
+            if (ChildScroll4 != null) {
+                ChildScroll4.Free();
+            }
             ChildScroll4 = null;
         }
     }

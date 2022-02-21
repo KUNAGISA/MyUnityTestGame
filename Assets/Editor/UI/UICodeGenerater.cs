@@ -257,6 +257,7 @@ namespace AutoGenerateUI@SubSpace {
             { "Slider", "SliderCell" },
             { "InputField", "InputCell" },
             { "ScrollRect", "ScrollCell" },
+            { "ScrollRectExtra", "ScrollCell" },
             { "Scrollbar", "BarCell" },
             { "Dropdown", "DropdownCell" },
             { "TMPro.TMP_InputField", "InputCell" },
