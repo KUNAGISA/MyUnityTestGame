@@ -18,7 +18,9 @@ namespace AutoGenerateUI.Test {
         public RectTransform Panel  { get; private set; }
         public ButtonCell TestBtn  { get; private set; }
         public RawImage TestRawImg  { get; private set; }
-        public ScrollCell Scroll  { get; private set; }
+        public ScrollRectEtra Scroll  { get; private set; }
+        public RectTransform Viewport  { get; private set; }
+        public RectTransform Content  { get; private set; }
 
         public void Init(Transform inst) {
             
@@ -42,9 +44,21 @@ namespace AutoGenerateUI.Test {
             }
             Transform ScrollXform = PanelXform.Find("Scroll");
             if ( ScrollXform != null) {
-                Scroll = new ScrollCell(ScrollXform);
+                Scroll = ScrollXform.GetComponent<ScrollRectEtra>();
             } else {
                 Debug.LogError("Scroll Can't Find Under PanelXform");
+            }
+            Transform ViewportXform = ScrollXform.Find("Viewport");
+            if ( ViewportXform != null) {
+                Viewport = ViewportXform as RectTransform;
+            } else {
+                Debug.LogError("Viewport Can't Find Under ScrollXform");
+            }
+            Transform ContentXform = ViewportXform.Find("Content");
+            if ( ContentXform != null) {
+                Content = ContentXform as RectTransform;
+            } else {
+                Debug.LogError("Content Can't Find Under ViewportXform");
             }
         }
 
@@ -56,10 +70,9 @@ namespace AutoGenerateUI.Test {
             }
             TestBtn = null;
             TestRawImg = null;
-            if (Scroll != null) {
-                Scroll.Free();
-            }
             Scroll = null;
+            Viewport = null;
+            Content = null;
         }
     }
 }
