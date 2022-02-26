@@ -135,7 +135,7 @@ GameObject:
   - component: {fileID: 157581627}
   - component: {fileID: 157581626}
   - component: {fileID: 157581625}
-  - component: {fileID: 157581624}
+  - component: {fileID: 157581630}
   m_Layer: 0
   m_Name: 0_test-05
   m_TagString: Untagged
@@ -143,26 +143,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!95 &157581624
-Animator:
-  serializedVersion: 4
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 157581623}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: b68893bfa7b6b2b469af30c2bd2feedd, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!114 &157581625
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -179,6 +159,8 @@ MonoBehaviour:
   speed: 1
   IsInBattle: 0
   m_WaitEndTime: 0
+  a: {fileID: 11400000, guid: 25a2acfd40ce52344b222c42e4ece29e, type: 2}
+  idleAnimation: {fileID: 7400000, guid: 2264568106c10d04ca5ae9baa3b2b827, type: 2}
 --- !u!114 &157581626
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -344,6 +326,26 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!95 &157581630
+Animator:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 157581623}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 0}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &1696849034
 GameObject:
   m_ObjectHideFlags: 0
