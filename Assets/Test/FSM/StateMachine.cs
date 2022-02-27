@@ -30,8 +30,16 @@ namespace FSM
 
         public void SendMessage<TMessage>(in TMessage message)
         {
-            var receive = m_CurrState as IReceiveMsg<TMessage, Entity>;
-            receive?.ReceiveMsg(in message)?.Execute(m_Entity, this);
+            if (m_CurrState is IReceiveMsg<TMessage, Entity>)
+            {
+                var receive = m_CurrState as IReceiveMsg<TMessage, Entity>;
+                receive.ReceiveMsg(in message)?.Execute(m_Entity, this);
+            }
+            else if (m_CurrState is IReceiveAnyMsg<Entity>)
+            {
+                var receive = m_CurrState as IReceiveAnyMsg<Entity>;
+                receive?.ReceiveMsg(in message)?.Execute(m_Entity, this);
+            }
         }
 
         public void TickStateMachine()
