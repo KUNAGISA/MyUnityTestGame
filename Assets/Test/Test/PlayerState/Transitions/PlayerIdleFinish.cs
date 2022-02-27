@@ -1,8 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+using FSM;
 
-namespace FSM.Test
+namespace Test
 {
     public struct PlayerIdleFinish : ITransition<Player>
     {

@@ -1,6 +1,7 @@
+using FSM;
 using UnityEngine;
 
-namespace FSM.Test
+namespace Test
 {
     public class PlayerIdleState : PlayerBaseState, IPlayerReceive<TestMsg>
     {

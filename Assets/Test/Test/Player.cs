@@ -6,8 +6,9 @@ using UnityEngine.Animations;
 using UnityEngine.InputSystem;
 using UnityEngine.Playables;
 using UnityEngine.Timeline;
+using FSM;
 
-namespace FSM.Test
+namespace Test
 {
     public struct TestMsg
     {

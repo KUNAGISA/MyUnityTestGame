@@ -1,8 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-namespace FSM.Test
+namespace Test
 {
     public class TextAnim : StateMachineBehaviour
     {

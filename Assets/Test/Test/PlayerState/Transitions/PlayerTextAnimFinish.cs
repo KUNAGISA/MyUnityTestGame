@@ -1,4 +1,6 @@
-namespace FSM.Test
+using FSM;
+
+namespace Test
 {
     public struct PlayerTextAnimFinish : ITransition<Player>
     {

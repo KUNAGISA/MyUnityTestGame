@@ -1,6 +1,7 @@
-﻿using UnityEngine;
+﻿using FSM;
+using UnityEngine;
 
-namespace FSM.Test
+namespace Test
 {
     public class PlayerTextState : PlayerBaseState
     {
