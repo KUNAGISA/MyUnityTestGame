@@ -33,6 +33,8 @@ namespace Test
         public PlayableGraph m_timeLinePlayer;
         public Playable m_timeline;
 
+        public AnimationPlayableAsset m_track;
+
         public PlayableGraph m_AnimationClipPlayer;
         public AnimationClip idleAnimation;
 
@@ -45,9 +47,18 @@ namespace Test
             m_StateMachine.RegisterState(new PlayerTextState());
             m_StateMachine.ChangeState<PlayerIdleState>();
 
-            m_timeLinePlayer = PlayableGraph.Create("TimeLine");
+            var director = GetComponent<PlayableDirector>();
+            director.Play(a, DirectorWrapMode.Loop);
 
+            foreach (var track in a.GetOutputTracks())
+            {
+                if (track.name == "Player")
+                {
+                    director.SetGenericBinding(track, GetComponent<Animator>());
+                }
+             }
 
+            //m_timeLinePlayer = PlayableGraph.Create("TimeLine");
             //m_timeline = a.CreatePlayable(m_timeLinePlayer, gameObject);
 
             //for (var index = 0; index < m_timeLinePlayer.GetOutputCount(); ++index)
@@ -59,25 +70,35 @@ namespace Test
             //    }
             //}
 
-            //m_timeLinePlayer.SetTimeUpdateMode(DirectorUpdateMode.GameTime);
+            //m_timeLinePlayer.SetTimeUpdateMode(DirectorUpdateMode.Manual);
             //m_timeLinePlayer.Play();
 
-            m_AnimationClipPlayer = PlayableGraph.Create("Animation");
-            var animOutput = AnimationPlayableOutput.Create(m_AnimationClipPlayer, "Idle", GetComponent<Animator>());
-            animOutput.SetSourcePlayable(AnimationClipPlayable.Create(m_AnimationClipPlayer, idleAnimation));
-            m_AnimationClipPlayer.Play();
+            //m_AnimationClipPlayer = PlayableGraph.Create("Animation");
+            //var animOutput = AnimationPlayableOutput.Create(m_AnimationClipPlayer, "Idle", GetComponent<Animator>());
+            //animOutput.SetSourcePlayable(AnimationClipPlayable.Create(m_AnimationClipPlayer, idleAnimation));
+            //m_AnimationClipPlayer.Play();
         }
 
         private void OnDestroy()
         {
-            m_timeLinePlayer.Destroy();
-            m_AnimationClipPlayer.Destroy();
+            //m_timeLinePlayer.Destroy();
+            //m_AnimationClipPlayer.Destroy();
         }
 
         private void Update()
         {
             m_StateMachine.TickStateMachine();
-            //m_timeLinePlayer.Evaluate();
+
+            var director = GetComponent<PlayableDirector>();
+            director.time = GetComponent<PlayableDirector>().time + Time.deltaTime;
+            GetComponent<PlayableDirector>().Evaluate();
+
+            if (director.extrapolationMode == DirectorWrapMode.Loop && director.time > director.duration)
+            {
+                director.time %= director.duration;
+            }
+            
+            //m_timeLinePlayer.Evaluate(Time.deltaTime);
             //m_AnimationClipPlayer.Evaluate();
         }
 
