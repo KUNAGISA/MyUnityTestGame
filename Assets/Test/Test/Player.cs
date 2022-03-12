@@ -7,6 +7,7 @@ using UnityEngine.InputSystem;
 using UnityEngine.Playables;
 using UnityEngine.Timeline;
 using FSM;
+using UnityEngine.Audio;
 
 namespace Test
 {
@@ -50,25 +51,30 @@ namespace Test
             var director = GetComponent<PlayableDirector>();
             director.Play(a, DirectorWrapMode.Loop);
 
-            foreach (var track in a.GetOutputTracks())
-            {
-                if (track.name == "Player")
-                {
-                    director.SetGenericBinding(track, GetComponent<Animator>());
-                }
-             }
-
-            //m_timeLinePlayer = PlayableGraph.Create("TimeLine");
-            //m_timeline = a.CreatePlayable(m_timeLinePlayer, gameObject);
-
-            //for (var index = 0; index < m_timeLinePlayer.GetOutputCount(); ++index)
+            //foreach (var track in a.GetOutputTracks())
             //{
-            //    var output = m_timeLinePlayer.GetOutput(index);
-            //    if (output.GetPlayableOutputType() == typeof(AnimationPlayableOutput))
+            //    if (track.name == "Player")
             //    {
-            //        ((AnimationPlayableOutput)output).SetTarget(GetComponent<Animator>());
+            //        director.SetGenericBinding(track, GetComponent<Animator>());
             //    }
-            //}
+            // }
+
+            m_timeLinePlayer = PlayableGraph.Create("TimeLine");
+            m_timeline = a.CreatePlayable(m_timeLinePlayer, gameObject);
+            
+            for (var index = 0; index < m_timeLinePlayer.GetOutputCount(); ++index)
+            {
+                var output = m_timeLinePlayer.GetOutput(index);
+                if (output.GetPlayableOutputType() == typeof(AnimationPlayableOutput))
+                {
+                    ((AnimationPlayableOutput)output).SetTarget(GetComponent<Animator>());
+                }
+                else if (output.GetPlayableOutputType() == typeof(AudioPlayableOutput))
+                {
+                    ((AudioPlayableOutput)output).SetEvaluateOnSeek(true);
+                    ((AudioPlayableOutput)output).SetTarget(GetComponent<AudioSource>());
+                }
+            }
 
             //m_timeLinePlayer.SetTimeUpdateMode(DirectorUpdateMode.Manual);
             //m_timeLinePlayer.Play();
@@ -81,7 +87,7 @@ namespace Test
 
         private void OnDestroy()
         {
-            //m_timeLinePlayer.Destroy();
+            m_timeLinePlayer.Destroy();
             //m_AnimationClipPlayer.Destroy();
         }
 
@@ -89,16 +95,17 @@ namespace Test
         {
             m_StateMachine.TickStateMachine();
 
-            var director = GetComponent<PlayableDirector>();
-            director.time = GetComponent<PlayableDirector>().time + Time.deltaTime;
-            GetComponent<PlayableDirector>().Evaluate();
+            //var director = GetComponent<PlayableDirector>();
+            //director.time = GetComponent<PlayableDirector>().time + Time.deltaTime;
+            //GetComponent<PlayableDirector>().Evaluate();
 
-            if (director.extrapolationMode == DirectorWrapMode.Loop && director.time > director.duration)
-            {
-                director.time %= director.duration;
-            }
+            //if (director.extrapolationMode == DirectorWrapMode.Loop && director.time > director.duration)
+            //{
+            //    director.time %= director.duration;
+            //}
+
             
-            //m_timeLinePlayer.Evaluate(Time.deltaTime);
+            m_timeLinePlayer.Evaluate(Time.deltaTime);
             //m_AnimationClipPlayer.Evaluate();
         }
 
