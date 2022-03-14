@@ -16,7 +16,7 @@ namespace Test
 
     }
 
-    public class Player : MonoBehaviour
+    public class Player : MonoBehaviour, IExposedPropertyTable, INotificationReceiver
     {
         public int face = 1;
 
@@ -41,16 +41,14 @@ namespace Test
 
         private void Awake()
         {
-
-
             m_StateMachine = new StateMachine<Player>(this);
             m_StateMachine.RegisterState(new PlayerIdleState());
             m_StateMachine.RegisterState(new PlayerTextState());
             m_StateMachine.ChangeState<PlayerIdleState>();
 
             var director = GetComponent<PlayableDirector>();
-            director.Play(a, DirectorWrapMode.Loop);
-
+            director?.Play(a, DirectorWrapMode.Loop);
+            
             //foreach (var track in a.GetOutputTracks())
             //{
             //    if (track.name == "Player")
@@ -59,22 +57,27 @@ namespace Test
             //    }
             // }
 
-            m_timeLinePlayer = PlayableGraph.Create("TimeLine");
-            m_timeline = a.CreatePlayable(m_timeLinePlayer, gameObject);
-            
-            for (var index = 0; index < m_timeLinePlayer.GetOutputCount(); ++index)
-            {
-                var output = m_timeLinePlayer.GetOutput(index);
-                if (output.GetPlayableOutputType() == typeof(AnimationPlayableOutput))
-                {
-                    ((AnimationPlayableOutput)output).SetTarget(GetComponent<Animator>());
-                }
-                else if (output.GetPlayableOutputType() == typeof(AudioPlayableOutput))
-                {
-                    ((AudioPlayableOutput)output).SetEvaluateOnSeek(true);
-                    ((AudioPlayableOutput)output).SetTarget(GetComponent<AudioSource>());
-                }
-            }
+            //m_timeLinePlayer = PlayableGraph.Create("TimeLine");
+            //m_timeLinePlayer.SetResolver(this);
+
+            //m_timeline = a.CreatePlayable(m_timeLinePlayer, gameObject);
+
+            //var notificationOutput = m_timeLinePlayer.GetOutputByType<ScriptPlayableOutput>(0);
+            //notificationOutput.AddNotificationReceiver(this);
+
+            //for (var index = 0; index < m_timeLinePlayer.GetOutputCount(); ++index)
+            //{
+            //    var output = m_timeLinePlayer.GetOutput(index);
+            //    if (output.GetPlayableOutputType() == typeof(AnimationPlayableOutput))
+            //    {
+            //        ((AnimationPlayableOutput)output).SetTarget(GetComponent<Animator>());
+            //    }
+            //    else if (output.GetPlayableOutputType() == typeof(AudioPlayableOutput))
+            //    {
+            //        ((AudioPlayableOutput)output).SetEvaluateOnSeek(true);
+            //        ((AudioPlayableOutput)output).SetTarget(GetComponent<AudioSource>());
+            //    }
+            //}
 
             //m_timeLinePlayer.SetTimeUpdateMode(DirectorUpdateMode.Manual);
             //m_timeLinePlayer.Play();
@@ -87,7 +90,7 @@ namespace Test
 
         private void OnDestroy()
         {
-            m_timeLinePlayer.Destroy();
+            //m_timeLinePlayer.Destroy();
             //m_AnimationClipPlayer.Destroy();
         }
 
@@ -105,7 +108,7 @@ namespace Test
             //}
 
             
-            m_timeLinePlayer.Evaluate(Time.deltaTime);
+            //m_timeLinePlayer.Evaluate(Time.deltaTime);
             //m_AnimationClipPlayer.Evaluate();
         }
 
@@ -116,6 +119,30 @@ namespace Test
         public void OnInput()
         {
             m_StateMachine.SendMessage(new TestMsg());
+        }
+
+        private Dictionary<PropertyName, Object> m_propertyObjs = new Dictionary<PropertyName, Object>();
+
+        void IExposedPropertyTable.SetReferenceValue(PropertyName id, Object value)
+        {
+            m_propertyObjs[id] = value;
+        }
+
+        Object IExposedPropertyTable.GetReferenceValue(PropertyName id, out bool idValid)
+        {
+            idValid = m_propertyObjs.TryGetValue(id, out var obj);
+            return obj;
+        }
+
+        void IExposedPropertyTable.ClearReferenceValue(PropertyName id)
+        {
+            m_propertyObjs.Remove(id);
+        }
+
+        void INotificationReceiver.OnNotify(Playable origin, INotification notification, object context)
+        {
+            Debug.Log(notification);
+            Debug.Log(context);
         }
     }
 }

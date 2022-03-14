@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,7 +15,7 @@ namespace Test
         private void OnDrawGizmos()
         {
             Gizmos.color = Color.red;
-            Gizmos.DrawSphere(transform.position, 3);
+            Gizmos.DrawWireSphere(transform.position, 3);
         }
     }
 
@@ -40,12 +41,23 @@ namespace Test
             SetHideFlagsRecursive(go);
         }
 
+        public override void PrepareFrame(Playable playable, FrameData info)
+        {
+            base.PrepareFrame(playable, info);
+        }
+
+        public override void ProcessFrame(Playable playable, FrameData info, object playerData)
+        {
+            Debug.Log(info.weight);
+            base.ProcessFrame(playable, info, playerData);
+        }
+
         static void SetHideFlagsRecursive(GameObject gameObject)
         {
             gameObject.hideFlags = HideFlags.DontSaveInBuild | HideFlags.DontSaveInEditor;
 
             if (!Application.isPlaying)
-                gameObject.hideFlags |= HideFlags.HideInHierarchy;
+                gameObject.hideFlags |= HideFlags.HideInInspector;
 
             foreach (Transform child in gameObject.transform)
             {
@@ -54,6 +66,7 @@ namespace Test
         }
     }
 
+    [DisplayName("啊啊啊")]
     class BoxAsset : PlayableAsset
     {
         public override Playable CreatePlayable(PlayableGraph graph, GameObject owner)
