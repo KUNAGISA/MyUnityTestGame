@@ -1,6 +1,7 @@
 ﻿using FSM;
 using UnityEngine;
 using UnityEngine.Playables;
+using UnityEngine.Animations;
 
 namespace Game.Test
 {
@@ -13,6 +14,12 @@ namespace Game.Test
             m_playable = PlayableGraph.Create("Attack");
             m_playable.SetTimeUpdateMode(DirectorUpdateMode.Manual);
             player.attackPlayable.CreatePlayable(m_playable, player.gameObject);
+
+            for (int i = 0; i < m_playable.GetOutputCountByType<AnimationPlayableOutput>(); i++)
+            {
+                var output = (AnimationPlayableOutput)m_playable.GetOutputByType<AnimationPlayableOutput>(i);
+                output.SetTarget(player.GetComponent<Animator>());
+            }
         }
 
         protected override void OnEnterState()

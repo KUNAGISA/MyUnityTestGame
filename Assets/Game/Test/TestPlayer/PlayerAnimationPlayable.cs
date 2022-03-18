@@ -34,6 +34,7 @@ namespace Game.Test
                 AnimationClipPlayable animationClipPlayable = AnimationClipPlayable.Create(graph, clip);
                 AnimationPlayableOutput output = AnimationPlayableOutput.Create(graph, "AnimationClip", animator);
                 output.SetSourcePlayable(animationClipPlayable);
+
                 return animationClipPlayable;
             }
             return Playable.Null;
