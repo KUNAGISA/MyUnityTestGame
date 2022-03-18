@@ -8,6 +8,7 @@ using UnityEngine.Playables;
 using UnityEngine.Timeline;
 using FSM;
 using UnityEngine.Audio;
+using UnityEngine.VFX;
 
 namespace Test
 {
@@ -41,6 +42,8 @@ namespace Test
 
         private void Awake()
         {
+            GetComponent<VisualEffect>().Simulate(0);
+
             m_StateMachine = new StateMachine<Player>(this);
             m_StateMachine.RegisterState(new PlayerIdleState());
             m_StateMachine.RegisterState(new PlayerTextState());
