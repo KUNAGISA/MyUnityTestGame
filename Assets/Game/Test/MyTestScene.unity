@@ -2273,10 +2273,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: TestPlayer
       objectReference: {fileID: 0}
+    - target: {fileID: 2851872874276321614, guid: 1a8edbfa14aa3d341891e0c17d041c0c, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: 3516264335884339171, guid: 1a8edbfa14aa3d341891e0c17d041c0c, type: 3}
       propertyPath: attackPlayable
       value: 
       objectReference: {fileID: 11400000, guid: ad89ad57f4c8f3648ad424ff22000ee3, type: 2}
+    - target: {fileID: 6182028321979103582, guid: 1a8edbfa14aa3d341891e0c17d041c0c, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: 6206973917359164558, guid: 1a8edbfa14aa3d341891e0c17d041c0c, type: 3}
       propertyPath: m_RootOrder
       value: 1
