@@ -40,7 +40,7 @@ namespace Game
 
         void CustomInputAction.IPlayerActions.OnFire(InputAction.CallbackContext context)
         {
-            
+            this.SendCommand(new TestCommand());
         }
 
         public void OnJump(InputAction.CallbackContext context)
