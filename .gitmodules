@@ -1,3 +1,3 @@
 [submodule "Assets/Framework"]
 	path = Assets/Framework
-	url = git@github.com:KUNAGISA/MyGameFramework.git
+url=git@github.com:KUNAGISA/UnityGameFramework.git
