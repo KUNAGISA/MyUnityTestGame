@@ -19,9 +19,9 @@ namespace Game.Test
 
     public abstract class BasePlayerState : IPlayerState, IEnterState
     {
-        protected readonly TestPlayer player;
+        protected readonly BasePlayer player;
 
-        public BasePlayerState(TestPlayer player)
+        public BasePlayerState(BasePlayer player)
         {
             this.player = player;
         }
@@ -41,9 +41,9 @@ namespace Game.Test
 
     public abstract class BasePlayerState<TData> : IPlayerState, IEnterState<TData>
     {
-        protected readonly TestPlayer player;
+        protected readonly BasePlayer player;
 
-        public BasePlayerState(TestPlayer player)
+        public BasePlayerState(BasePlayer player)
         {
             this.player = player;
         }

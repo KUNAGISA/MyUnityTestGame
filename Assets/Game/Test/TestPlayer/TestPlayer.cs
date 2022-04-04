@@ -6,9 +6,9 @@ using UnityEngine.Timeline;
 
 namespace Game.Test
 {
-    public class TestPlayer : MonoBehaviour
+    public class TestPlayer : BasePlayer
     {
-        private StateMachine<IPlayerState> m_stateMachine;
+       
 
         [SerializeField]
         public PlayableAsset normalPlayable;
