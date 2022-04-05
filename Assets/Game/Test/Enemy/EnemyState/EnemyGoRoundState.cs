@@ -23,6 +23,7 @@ namespace Game.Test
             m_playableGraph = PlayableGraph.Create("EnemyWalkAnimation");
             m_playableGraph.SetTimeUpdateMode(DirectorUpdateMode.Manual);
 
+
             m_MoveSceond = kTurnAroundSeconds - kStayIdelSeconds;
             if (m_MoveSceond < 0)
             {
@@ -33,10 +34,21 @@ namespace Game.Test
         protected override void OnEnterState()
         {
             base.OnEnterState();
+            m_originalPos = player.transform.position;
+            m_TargetMoveDis = new Vector3(player.transform.position.x + goAroundDistance, player.transform.position.y, 0);
 
-            playAnima(m_IdelClip);
             time = 0;
             m_curDir = 0;
+            m_isStop = true;
+            if (m_isStop)
+            {
+                playAnima(m_IdelClip);
+            }
+            else
+            {
+                playAnima(m_WalkClip);
+            }
+
         }
 
 
@@ -63,14 +75,16 @@ namespace Game.Test
         /// </summary>
         private readonly int m_MoveSceond;
         private float time = 0;
-        private readonly Vector3 m_rightDir = Vector3.one;
+        private readonly Vector3 m_rightDir = new Vector3(1, 1, 1);
         private readonly Vector3 m_leftDir = new Vector3(-1, 1, 1);
-
+        private Vector3 m_TargetMoveDis;
+        private Vector3 m_originalPos;
         /// <summary>
         /// 当前方向  0 右 1 左 
         /// </summary>
         private int m_curDir = 0;
 
+        private bool m_isStop = false;
         protected override ITransition<IPlayerState> OnTickState()
         {
             m_playableGraph.Evaluate(Time.deltaTime);
@@ -83,14 +97,19 @@ namespace Game.Test
                     if (time < -kStayIdelSeconds)
                     {
                         m_curDir = 0;
-                        turnAroundFunc();
+                        m_isStop = false;
+                        m_TargetMoveDis = player.transform.position + new Vector3(goAroundDistance, 0, 0);
                         playAnima(m_WalkClip);
 
                     }
                     else
                     {
-                        playAnima(m_IdelClip);
-                        return base.OnTickState();
+                        if (!m_isStop)
+                        {
+                            m_isStop = true;
+                            playAnima(m_IdelClip);
+                        }
+
                     }
                 }
 
@@ -103,17 +122,21 @@ namespace Game.Test
                     if (time > kTurnAroundSeconds + kStayIdelSeconds)
                     {
                         m_curDir = 1;
-                        turnAroundFunc();
+                        m_isStop = false;
+                        m_TargetMoveDis = player.transform.position - new Vector3(goAroundDistance, 0, 0);
                         playAnima(m_WalkClip);
                     }
                     else
                     {
-                        playAnima(m_IdelClip);
-                        return base.OnTickState();
+                        if (!m_isStop)
+                        {
+                            m_isStop = true;
+                            playAnima(m_IdelClip);
+                        }
                     }
                 }
             }
-
+            turnAroundFunc();
 
 
             return base.OnTickState();
@@ -122,21 +145,21 @@ namespace Game.Test
 
         private void turnAroundFunc()
         {
+            if (m_isStop)
+            {
+                return;
+            }
             if (m_curDir == 1)
             {
                 //右边
                 player.transform.localScale = m_rightDir;
-                var movePosX = player.transform.position.x + goAroundDistance;
-                player.transform.DoTransformX(movePosX, m_MoveSceond, onAroundFinish);
-
+                player.transform.Translate(Vector3.right * 0.01f, Space.World);
             }
             else
             {
                 //左边
                 player.transform.localScale = m_leftDir;
-                var movePosX = player.transform.position.x - goAroundDistance;
-                player.transform.DoTransformX(movePosX, m_MoveSceond, onAroundFinish);
-
+                player.transform.Translate(Vector3.left * 0.01f, Space.World);
             }
         }
 
